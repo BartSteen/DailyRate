@@ -1,0 +1,6 @@
+encrypt passwords using Bcrypt
+determine site idea - daily rating || Dinnerplan || 
+close database?
+make router
+make database module or something
+double password login

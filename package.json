@@ -1,0 +1,16 @@
+{
+  "name": "logerwip",
+  "version": "1.0.0",
+  "description": "i dont know yet",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Bart van der Steenhoven",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.17.1",
+    "express-session": "^1.17.1",
+    "sqlite3": "^5.0.0"
+  }
+}
