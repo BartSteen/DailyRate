@@ -7,16 +7,14 @@
 
     </head>
     <body>
-        <h1>login here</h1>
-        <button type="button" name="indexButton" onclick="location.href='/index'">Index</button>
-
-        <h2>Login</h2>
-          <label for="username">Username:</label><br>
-          <input type="text" id="username" name="username"><br>
-          <label for="password">Password:</label><br>
-          <input type="password" id="password" name="password"><br>
-          <button type="button" name="loginButton" id="loginButton">Login</button>
-          <button type="button" name="registerButton" id="registerButton">Register</button>
+        <button type="button" name="homeButton" onclick="location.href='/'">Index</button>
+        <div class="loginDiv">
+            <h1>Login</h1>
+            <input type="text" class="logInput" id="username" name="username", placeholder="username"><br>
+            <input type="password" class="logInput" id="password" name="password" placeholder="password"><br>
+            <button class="logButtons" type="button" name="loginButton" id="loginButton">Login</button>
+            <button class="logButtons" type="button" name="registerButton" id="registerButton">Register</button>
+      </div>
     </body>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script type="text/javascript" src="js/login.js"></script>

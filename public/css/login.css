@@ -1,3 +1,41 @@
 h1 {
-    color: red;
+    color: white;
+    font: 48px Helvetica;
+}
+
+body {
+    background: url("/images/indexBackground.png")
+}
+
+.logButtons {
+  background-color: #4CAF50; /* Green */
+  border: white;
+  color: white;
+  padding: 15px 32px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 18px;
+  margin: 12px;
+  border-radius: 6px;
+}
+
+.loginDiv {
+    margin: auto;
+    width: 50%;
+    padding: 100px;
+    text-align: center;
+}
+
+.logInput {
+    width: 50%;
+    padding: 10px 15px;
+    box-sizing: border-box;
+    border-radius: 6px;
+    margin: 8px;
+    font-size: 18px
+}
+
+.logInput:focus {
+    border: 4px solid green
 }
