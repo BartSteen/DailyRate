@@ -63,7 +63,11 @@ router.use(express.static('public', {
 router.post("/login", function(req, res) {
     let username = req.body.username;
     let password = req.body.password;
-    attemptLogin(username, password, res, req);
+    if (username == "" || password == "") {
+        res.status(400).end("ERROR: missing values")
+    } else {
+        attemptLogin(username, password, res, req);
+    }
 })
 
 //handle register request
@@ -71,7 +75,7 @@ router.post("/register", function(req, res) {
     let username = req.body.username;
     let password = req.body.password;
     if (username == "" || password== "") {
-        res.end("Error: no username or password");
+        res.status(400).end("ERROR: no username or password");
     } else {
         attemptRegister(username, password, res);
     }
@@ -85,9 +89,9 @@ function attemptLogin(username, password, res, req) {
         if (rows.length > 0) {
             req.session.loggedin = true;
             req.session.userID = rows[0].id;
-            res.end("Succesfully logged in with id " + rows[0].id);
+            res.status(200).end("Succesfully logged in with id " + rows[0].id);
         } else {
-            res.end("Failed login (username pw combination does not exist)");
+            res.status(401).end("Failed login (username pw combination does not exist)");
         }
     })
 }
@@ -98,13 +102,13 @@ function attemptRegister(username, password, res) {
             console.log(err)
         }
         if (rows.length > 0) {
-            res.end("Username is not available");
+            res.status(409).end("Username not available");
         } else {
             db.run('INSERT INTO users(username, password) VALUES (?, ?)', [username, password], function(err) {
                 if (err) {
                     console.log(err)
                 }
-                res.end("Account created with username " + username)
+                res.status(201).end("Account created with username " + username)
             });
         }
     })

@@ -1,6 +1,6 @@
 encrypt passwords using Bcrypt
-determine site idea - daily rating || Dinnerplan || 
+determine site idea - daily rating || Dinnerplan ||
 close database?
-make router
 make database module or something
-double password login
+appearance
+make 404 page

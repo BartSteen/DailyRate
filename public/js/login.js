@@ -1,18 +1,5 @@
 $("#loginButton").click(function() {loginRequest()});
 
-$("#registerButton").click(function() {
-    let username = $("#username").val();
-    let password = $("#password").val();
-    if (username == "" || password == "") {
-        alert("You must fill in a username and password");
-    } else {
-        $.post("/register", {username:username, password:password}, function(data, status) {
-            console.log("Data: " + data + "\nStatus: " + status)
-        })
-    }
-})
-
-
 $("#username").keyup(function(event) {
     if (event.keyCode == 13) {
         loginRequest();
@@ -31,12 +18,28 @@ function loginRequest() {
     if (username == "" || password == "") {
         alert("You must fill in a username and password");
     } else {
-        $.post("/login", {username:username, password:password}, function(data, status) {
-            if (data.toLowerCase().includes("failed")) {
-                alert("Wrong combination");
-            } else {
-            window.location.href = "/admin";
-            }
-        })
+        //all is in order
+        $.ajax({
+          type: "POST",
+          url: "/login",
+          data: {username: username, password: password},
+          success: function(data, status, res){
+              if (res.status == 200) {
+                  //succesful login
+                  window.location.href = "/admin";
+              }
+          },
+          error: function(res) {
+              if (res.status == 401) {
+                  //not entry in the db
+                  alert("Wrong combination");
+              } else if (res.status == 400) {
+                  //empty field
+                  alert("Fill in all fields")
+              } else {
+                  alert("Something went wrong")
+              }
+          }
+    });
     }
 }

@@ -20,7 +20,7 @@ body {
   border-radius: 6px;
 }
 
-.loginDiv {
+.registerDiv {
     margin: auto;
     width: 50%;
     padding: 100px;
@@ -38,9 +38,4 @@ body {
 
 .logInput:focus {
     border: 4px solid green
-}
-
-a {
-    color: white;
-    font: 20px Helvetica;
 }
