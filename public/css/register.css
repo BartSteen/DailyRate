@@ -9,7 +9,7 @@ body {
 
 .logButtons {
   background-color: #4CAF50; /* Green */
-  border: white;
+  border: 2px solid white;
   color: white;
   padding: 15px 32px;
   text-align: center;
@@ -18,6 +18,13 @@ body {
   font-size: 18px;
   margin: 12px;
   border-radius: 6px;
+  transition-duration: 0.4s;
+}
+
+.logButtons:hover {
+    background-color: white; /* Green */
+    color: black;
+    border: 2px solid green;
 }
 
 .registerDiv {
@@ -38,4 +45,10 @@ body {
 
 .logInput:focus {
     border: 4px solid green
+}
+
+
+a {
+    color: white;
+    font: 20px Helvetica;
 }

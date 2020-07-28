@@ -1,6 +1,8 @@
-encrypt passwords using Bcrypt
+encrypt passwords (using Bcrypt)
 determine site idea - daily rating || Dinnerplan ||
 close database?
 make database module or something
 appearance
 make 404 page
+Change password / delete account
+add email stuff
