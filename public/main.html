@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+    <head>
+        <meta charset="utf-8">
+        <title>Main</title>
+        <link rel="stylesheet" href="/css/main.css", type="text/css">
+    </head>
+    <body onload="setTexts()">
+        <div class="mainDiv">
+            <h1>Welcome</h1> <h1 id="nameText"></h1>
+            <h2>Todays date is:</h2>
+            <h2 id="dateText"></h2>
+        </div>
+        <div class="rateDiv">
+            <h2>You have not rated today yet</h2>
+            <div class="scaleDiv">
+                <button class="scaleButtons" id="scaleButton1">1</button>
+                <button class="scaleButtons" id="scaleButton2">2</button>
+                <button class="scaleButtons" id="scaleButton3">3</button>
+                <button class="scaleButtons" id="scaleButton4">4</button>
+                <button class="scaleButtons" id="scaleButton5">5</button>
+                <button class="scaleButtons" id="scaleButton6">6</button>
+                <button class="scaleButtons" id="scaleButton7">7</button>
+                <button class="scaleButtons" id="scaleButton8">8</button>
+                <button class="scaleButtons" id="scaleButton9">9</button>
+                <button class="scaleButtons" id="scaleButton10">10</button>
+            </div>
+        </div>
+        <button type="button" name="logoutButton" onclick="logout()">Logout</button>
+    </body>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="js/main.js"></script>
+</html>

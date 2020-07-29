@@ -26,7 +26,7 @@ function loginRequest() {
           success: function(data, status, res){
               if (res.status == 200) {
                   //succesful login
-                  window.location.href = "/admin";
+                  window.location.href = "/main";
               }
           },
           error: function(res) {

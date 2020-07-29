@@ -16,8 +16,8 @@ router.use((req, res, next) => {
     next();
 })
 
-//admin redirect only if the user is logged in
-router.get("/admin", function(req, res, next) {
+//main redirect only if the user is logged in
+router.get("/main", function(req, res, next) {
     if (req.session.loggedin) {
         next();
     } else {
@@ -25,9 +25,10 @@ router.get("/admin", function(req, res, next) {
     }
 })
 
+//retrieve username
 router.get("/user", function (req, res) {
     if (req.session.loggedin) {
-        db.get("SELECT * FROM users WHERE id == ?", [req.session.userID], (err, row) => {
+        db.get("SELECT id, username FROM users WHERE id == ?", [req.session.userID], (err, row) => {
             if (err) {
                 console.log(err);
             }
@@ -40,7 +41,7 @@ router.get("/user", function (req, res) {
 
 router.get("/login", function(req, res, next) {
     if (req.session.loggedin) {
-        res.redirect("/admin");
+        res.redirect("/main");
     } else {
         next();
     }

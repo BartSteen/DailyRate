@@ -1,0 +1,48 @@
+h1 {
+    color: white;
+    font: 48px Helvetica;
+    display: inline;
+    padding: 5px;
+}
+
+h2 {
+    color: white;
+    font: 32px Helvetica;
+}
+
+body {
+    background: url("/images/indexBackground.png")
+}
+
+.mainDiv {
+    margin: auto;
+    width: 50%;
+    padding: 100px;
+    text-align: center;
+}
+
+.rateDiv {
+    margin: auto;
+    width: 75%;
+    text-align: center;
+}
+
+.scaleButtons {
+    background-color: #4CAF50; /* Green */
+    border: 2px solid white;
+    color: white;
+    padding: 20px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 20px;
+    margin: 12px;
+    border-radius: 50%;
+    transition-duration: 0.4s;
+}
+
+.scaleButtons:hover {
+    background-color: white; /* Green */
+    color: black;
+    border: 2px solid green;
+}
