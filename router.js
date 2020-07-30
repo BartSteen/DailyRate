@@ -84,6 +84,29 @@ router.post("/register", function(req, res) {
     }
 })
 
+router.post("/rate", function(req, res) {
+    let dateString = req.body.dateString;
+    let rating = req.body.rating;
+
+    //rating should be 1-10
+    if (rating < 1 || rating > 10) {
+        res.status(400).end("Rating invalid")
+    }
+
+    //get date in a proper format
+    let date = new Date(dateString);
+    let numericDateString = date.getDate() + "-" + (date.getMonth() + 1) + "-" + date.getFullYear();
+
+    //insert it into the table or replace it if a rating for today already exists
+    db.run('REPLACE INTO ratings(userid, date, rating) VALUES (?, ?, ?)', [req.session.userID, numericDateString, rating], function(err) {
+        if (err) {
+            console.log(err)
+            res.status(409).end("ERROR, rating already exists")
+        }
+        res.status(200).end("Rating stored")
+    })
+})
+
 function attemptLogin(username, password, res, req) {
     db.get('SELECT * FROM users WHERE username == ?', [username], (err, row) => {
         if (err) {

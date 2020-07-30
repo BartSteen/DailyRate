@@ -1,12 +1,9 @@
-encrypt passwords (using Bcrypt)
 close database?
 make database module or something
 appearance
 make 404 page
 Change password / delete account
 add email stuff
-rate table in db
-rate posting to server
 rating retrieving from server
 nice home and logout buttons
 Clean router code (queries and hashing)

@@ -1,6 +1,8 @@
 let date;
 let username;
 let nameText;
+let rating;
+
 
 function getUserData() {
     fetch("/user", {
@@ -37,5 +39,25 @@ function logout() {
 
 //scale rating buttons actions
 $(".scaleButtons").click(function() {
-    console.log(this.textContent);
+    rating = parseInt(this.textContent);
+})
+
+$("#rateButton").click(function() {
+    if (!rating) {
+        alert("Select a rating first")
+    } else {
+        //post it to the server
+        $.ajax({
+          type: "POST",
+          url: "/rate",
+          data: {dateString: date.toDateString(), rating: rating},
+          success: function(data, status, res){
+              alert("succes");
+              console.log("data " + data + "\nStatus " + status + "\nres " + res);
+          },
+          error: function(res) {
+              console.log(res);
+          }
+    });
+    }
 })
