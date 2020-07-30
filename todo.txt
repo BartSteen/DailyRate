@@ -9,3 +9,4 @@ rate table in db
 rate posting to server
 rating retrieving from server
 nice home and logout buttons
+Clean router code (queries and hashing)

@@ -1,6 +1,8 @@
 var express = require('express');
 var sqlite3 = require('sqlite3')
 var router = express.Router();
+const bcrypt = require('bcrypt');
+const saltRounds = 10;
 
 //open db
 let db = new sqlite3.Database("mydb.db", sqlite3.OPEN_READWRITE, (err) => {
@@ -83,37 +85,56 @@ router.post("/register", function(req, res) {
 })
 
 function attemptLogin(username, password, res, req) {
-    db.all('SELECT * FROM users WHERE username == ? AND password == ?', [username, password], (err, rows) => {
+    db.get('SELECT * FROM users WHERE username == ?', [username], (err, row) => {
         if (err) {
             console.log(err)
         }
-        if (rows.length > 0) {
-            req.session.loggedin = true;
-            req.session.userID = rows[0].id;
-            res.status(200).end("Succesfully logged in with id " + rows[0].id);
+        if (row) {
+            bcrypt.compare(password, row.password, function(err, result) {
+                if (err) {
+                    console.log(err)
+                }
+                if (result) {
+                    req.session.loggedin = true;
+                    req.session.userID = row.id;
+                    res.status(200).end("Succesfully logged in with id " + row.id);
+                } else {
+                    res.status(401).end("Failed login (incorrect password)");
+                }
+            })
+
         } else {
-            res.status(401).end("Failed login (username pw combination does not exist)");
+            res.status(401).end("Failed login ");
         }
     })
 }
 
 function attemptRegister(username, password, res) {
-    db.all('SELECT * FROM users WHERE username == ?', [username], (err, rows) => {
-        if (err) {
-            console.log(err)
-        }
-        if (rows.length > 0) {
-            res.status(409).end("Username not available");
-        } else {
-            db.run('INSERT INTO users(username, password) VALUES (?, ?)', [username, password], function(err) {
+    //hash passwords
+    bcrypt.hash(password, saltRounds, function(err, hash) {
+            if (err) {
+                console.log(err);
+            }
+            //attempt to register
+            db.all('SELECT * FROM users WHERE username == ?', [username], (err, rows) => {
                 if (err) {
                     console.log(err)
                 }
-                res.status(201).end("Account created with username " + username)
-            });
-        }
+                if (rows.length > 0) {
+                    res.status(409).end("Username not available");
+                } else {
+                    db.run('INSERT INTO users(username, password) VALUES (?, ?)', [username, hash], function(err) {
+                        if (err) {
+                            console.log(err)
+                        }
+                        res.status(201).end("Account created with username " + username)
+                    });
+                }
+            })
+
     })
 }
+
 
 //404 page
 router.use(function(req, res) {
