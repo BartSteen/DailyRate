@@ -4,6 +4,6 @@ appearance
 make 404 page
 Change password / delete account
 add email stuff
-rating retrieving from server
 nice home and logout buttons
 Clean router code (queries and hashing)
+previous ratings overview / data analysis

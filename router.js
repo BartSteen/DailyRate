@@ -41,6 +41,22 @@ router.get("/user", function (req, res) {
     }
 })
 
+//retrieve ratings
+router.get("/rate", function(req, res) {
+    let date = new Date(req.query.dateString);
+    let numericDate = getNumericDate(date);
+    db.get("SELECT userid, date, rating FROM ratings WHERE userid == ? AND date == ?", [req.session.userID, numericDate], (err, row) => {
+        if (err) {
+            console.log(err);
+        }
+        if (row) {
+            res.json(row);
+        } else {
+            res.end("Not rated yet")
+        }
+    })
+})
+
 router.get("/login", function(req, res, next) {
     if (req.session.loggedin) {
         res.redirect("/main");
@@ -95,7 +111,7 @@ router.post("/rate", function(req, res) {
 
     //get date in a proper format
     let date = new Date(dateString);
-    let numericDateString = date.getDate() + "-" + (date.getMonth() + 1) + "-" + date.getFullYear();
+    let numericDateString = getNumericDate(date)
 
     //insert it into the table or replace it if a rating for today already exists
     db.run('REPLACE INTO ratings(userid, date, rating) VALUES (?, ?, ?)', [req.session.userID, numericDateString, rating], function(err) {
@@ -156,6 +172,11 @@ function attemptRegister(username, password, res) {
             })
 
     })
+}
+
+//transfer date object tot proper numeric date such as it is in the db
+function getNumericDate(date) {
+    return date.getDate() + "-" + (date.getMonth() + 1) + "-" + date.getFullYear();
 }
 
 

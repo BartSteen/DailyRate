@@ -2,6 +2,7 @@ let date;
 let username;
 let nameText;
 let rating;
+let showingScale = false;
 
 
 function getUserData() {
@@ -16,13 +17,56 @@ function getUserData() {
     })
 }
 
+function getRateData() {
+    if (!date) {
+        date = new Date();
+    }
+    $.ajax({
+        type: "GET",
+        url: "/rate",
+        data: {dateString: date.toDateString()},
+        success: function(data, status, res) {
+            showRatingText(data.rating);
+        },
+        error: function(err) {
+            alert("Something went wrong")
+        }
+    })
+}
+
+function showRatingText(score) {
+    if (score) {
+        showingScale = true;
+        toggleScale();
+        document.getElementById("scoreText").innerHTML = score;
+    } else {
+        toggleScale();
+    }
+}
+
+function toggleScale() {
+    let rateDiv = document.getElementById("rateDiv")
+    let isRatedDiv = document.getElementById("isRatedDiv")
+    let toggleButton = document.getElementById("toggleButton")
+    if (showingScale) {
+        rateDiv.style.display = 'none';
+        isRatedDiv.style.display = 'block';
+        toggleButton.innerHTML = "Change rating"
+    } else {
+        rateDiv.style.display = 'block';
+        isRatedDiv.style.display = 'none';
+        toggleButton.innerHTML = "Show rating"
+    }
+    showingScale = !showingScale
+}
+
 function setTexts() {
     let dateText = document.getElementById("dateText");
     nameText = document.getElementById("nameText");
 
     //show current date
     date = new Date();
-    dateText.innerHTML = date.toDateString()//date.getDate() + "-" + (date.getMonth() + 1) + "-" + date.getFullYear();
+    dateText.innerHTML = date.toDateString()
 
     //show username
     if (username) {
@@ -30,6 +74,7 @@ function setTexts() {
     } else {
         getUserData();
     }
+    getRateData();
 }
 
 function logout() {
@@ -52,10 +97,10 @@ $("#rateButton").click(function() {
           url: "/rate",
           data: {dateString: date.toDateString(), rating: rating},
           success: function(data, status, res){
-              alert("succes");
-              console.log("data " + data + "\nStatus " + status + "\nres " + res);
+              getRateData();
           },
           error: function(res) {
+              alert("Something went wrong")
               console.log(res);
           }
     });

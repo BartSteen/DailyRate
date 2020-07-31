@@ -25,6 +25,27 @@ body {
     margin: auto;
     width: 75%;
     text-align: center;
+    display: none;
+}
+
+#toggleButton {
+  background-color: #4CAF50; /* Green */
+  border: 2px solid white;
+  color: white;
+  padding: 15px 32px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 18px;
+  margin: 12px;
+  border-radius: 6px;
+  transition-duration: 0.4s;
+}
+
+#toggleButton:hover {
+    background-color: white; /* Green */
+    color: black;
+    border: 2px solid green;
 }
 
 .scaleButtons {
@@ -65,4 +86,8 @@ body {
     background-color: white; /* Green */
     color: black;
     border: 2px solid green;
+}
+
+.scoreText {
+    display: inline;
 }

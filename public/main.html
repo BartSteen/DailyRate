@@ -10,8 +10,9 @@
             <h1>Welcome</h1> <h1 id="nameText"></h1>
             <h2>Todays date is:</h2>
             <h2 id="dateText"></h2>
+            <button type="button" class="toggleButton" name="toggleButton" id="toggleButton"  onclick="toggleScale()">toggleScale</button>
         </div>
-        <div class="rateDiv">
+        <div class="rateDiv" id="rateDiv">
             <h2>You have not rated today yet</h2>
             <div class="scaleDiv">
                 <button class="scaleButtons" id="scaleButton1">1</button>
@@ -26,6 +27,9 @@
                 <button class="scaleButtons" id="scaleButton10">10</button>
             </div>
             <button type="button" name="rateButton" id="rateButton">Rate</button>
+        </div>
+        <div class="rateDiv" id="isRatedDiv">
+            <h2 class="scoreText">You gave today a:</h2> <h2 class="scoreText" id="scoreText"></h2>
         </div>
         <button type="button" name="logoutButton" onclick="logout()">Logout</button>
     </body>
