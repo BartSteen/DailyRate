@@ -123,55 +123,48 @@ router.post("/rate", function(req, res) {
     })
 })
 
+//attempts a login with the username and password and handles the response
 function attemptLogin(username, password, res, req) {
-    db.get('SELECT * FROM users WHERE username == ?', [username], (err, row) => {
+    db.get('SELECT * FROM users WHERE username == ?', [username], async (err, row) => {
         if (err) {
             console.log(err)
         }
         if (row) {
-            bcrypt.compare(password, row.password, function(err, result) {
-                if (err) {
-                    console.log(err)
-                }
-                if (result) {
-                    req.session.loggedin = true;
-                    req.session.userID = row.id;
-                    res.status(200).end("Succesfully logged in with id " + row.id);
-                } else {
-                    res.status(401).end("Failed login (incorrect password)");
-                }
-            })
-
+            const match = await bcrypt.compare(password, row.password);
+            if (match) {
+                req.session.loggedin = true;
+                req.session.userID = row.id;
+                res.status(200).end("Succesfully logged in with id " + row.id);
+            } else {
+                res.status(401).end("Failed login (incorrect password)");
+            }
         } else {
             res.status(401).end("Failed login ");
         }
     })
 }
 
-function attemptRegister(username, password, res) {
+
+async function attemptRegister(username, password, res) {
     //hash passwords
-    bcrypt.hash(password, saltRounds, function(err, hash) {
-            if (err) {
-                console.log(err);
-            }
-            //attempt to register
-            db.all('SELECT * FROM users WHERE username == ?', [username], (err, rows) => {
+    const hash = await bcrypt.hash(password, saltRounds)
+    //attempt to register
+    db.all('SELECT * FROM users WHERE username == ?', [username], (err, rows) => {
+        if (err) {
+            console.log(err)
+        }
+        if (rows.length > 0) {
+            res.status(409).end("Username not available");
+        } else {
+            db.run('INSERT INTO users(username, password) VALUES (?, ?)', [username, hash], function(err) {
                 if (err) {
                     console.log(err)
                 }
-                if (rows.length > 0) {
-                    res.status(409).end("Username not available");
-                } else {
-                    db.run('INSERT INTO users(username, password) VALUES (?, ?)', [username, hash], function(err) {
-                        if (err) {
-                            console.log(err)
-                        }
-                        res.status(201).end("Account created with username " + username)
-                    });
-                }
-            })
-
+                res.status(201).end("Account created with username " + username)
+            });
+        }
     })
+
 }
 
 //transfer date object tot proper numeric date such as it is in the db
