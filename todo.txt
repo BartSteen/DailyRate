@@ -5,5 +5,5 @@ make 404 page
 Change password / delete account
 add email stuff
 nice home and logout buttons
-Clean router code (queries and hashing) (sqlite instead of sqlite3 package)
+Clean router code (queries) (sqlite instead of sqlite3 package)
 previous ratings overview / data analysis

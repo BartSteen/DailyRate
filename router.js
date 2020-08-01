@@ -1,16 +1,11 @@
 var express = require('express');
-var sqlite3 = require('sqlite3')
+const sqlhandler = require("./sqlhandler.js")
 var router = express.Router();
 const bcrypt = require('bcrypt');
 const saltRounds = 10;
 
 //open db
-let db = new sqlite3.Database("mydb.db", sqlite3.OPEN_READWRITE, (err) => {
-    if (err) {
-        console.log(err);
-    }
-    console.log("Connected")
-});
+sqlhandler.openConnection();
 
 //log all requests
 router.use((req, res, next) => {
@@ -28,33 +23,26 @@ router.get("/main", function(req, res, next) {
 })
 
 //retrieve username
-router.get("/user", function (req, res) {
+router.get("/user", async function (req, res) {
     if (req.session.loggedin) {
-        db.get("SELECT id, username FROM users WHERE id == ?", [req.session.userID], (err, row) => {
-            if (err) {
-                console.log(err);
-            }
-            res.json(row);
-        })
+        const result = await sqlhandler.singleResQuery("SELECT id, username FROM users WHERE id == ?", [req.session.userID]);
+        res.json(result);
     } else {
         res.end("Error, not logged in")
     }
 })
 
 //retrieve ratings
-router.get("/rate", function(req, res) {
+router.get("/rate", async function(req, res) {
     let date = new Date(req.query.dateString);
     let numericDate = getNumericDate(date);
-    db.get("SELECT userid, date, rating FROM ratings WHERE userid == ? AND date == ?", [req.session.userID, numericDate], (err, row) => {
-        if (err) {
-            console.log(err);
-        }
-        if (row) {
-            res.json(row);
-        } else {
-            res.end("Not rated yet")
-        }
-    })
+
+    const result = await sqlhandler.singleResQuery("SELECT userid, date, rating FROM ratings WHERE userid == ? AND date == ?", [req.session.userID, numericDate])
+    if (result) {
+        res.json(result);
+    } else {
+        res.end("Not rated yet")
+    }
 })
 
 router.get("/login", function(req, res, next) {
@@ -100,7 +88,7 @@ router.post("/register", function(req, res) {
     }
 })
 
-router.post("/rate", function(req, res) {
+router.post("/rate", async function(req, res) {
     let dateString = req.body.dateString;
     let rating = req.body.rating;
 
@@ -114,34 +102,25 @@ router.post("/rate", function(req, res) {
     let numericDateString = getNumericDate(date)
 
     //insert it into the table or replace it if a rating for today already exists
-    db.run('REPLACE INTO ratings(userid, date, rating) VALUES (?, ?, ?)', [req.session.userID, numericDateString, rating], function(err) {
-        if (err) {
-            console.log(err)
-            res.status(409).end("ERROR, rating already exists")
-        }
-        res.status(200).end("Rating stored")
-    })
+    const result = await sqlhandler.actionQuery('REPLACE INTO ratings(userid, date, rating) VALUES (?, ?, ?)', [req.session.userID, numericDateString, rating]);
+    res.status(200).end("Rating stored")
 })
 
 //attempts a login with the username and password and handles the response
-function attemptLogin(username, password, res, req) {
-    db.get('SELECT * FROM users WHERE username == ?', [username], async (err, row) => {
-        if (err) {
-            console.log(err)
-        }
-        if (row) {
-            const match = await bcrypt.compare(password, row.password);
-            if (match) {
-                req.session.loggedin = true;
-                req.session.userID = row.id;
-                res.status(200).end("Succesfully logged in with id " + row.id);
-            } else {
-                res.status(401).end("Failed login (incorrect password)");
-            }
+async function attemptLogin(username, password, res, req) {
+    const result = await sqlhandler.singleResQuery('SELECT * FROM users WHERE username == ?', [username]);
+    if (result) {
+        const match = await bcrypt.compare(password, result.password);
+        if (match) {
+            req.session.loggedin = true;
+            req.session.userID = result.id;
+            res.status(200).end("Succesfully logged in with id " + result.id);
         } else {
-            res.status(401).end("Failed login ");
+            res.status(401).end("Failed login (incorrect password)");
         }
-    })
+    } else {
+        res.status(401).end("Failed login ");
+    }
 }
 
 
@@ -149,22 +128,13 @@ async function attemptRegister(username, password, res) {
     //hash passwords
     const hash = await bcrypt.hash(password, saltRounds)
     //attempt to register
-    db.all('SELECT * FROM users WHERE username == ?', [username], (err, rows) => {
-        if (err) {
-            console.log(err)
-        }
-        if (rows.length > 0) {
-            res.status(409).end("Username not available");
-        } else {
-            db.run('INSERT INTO users(username, password) VALUES (?, ?)', [username, hash], function(err) {
-                if (err) {
-                    console.log(err)
-                }
-                res.status(201).end("Account created with username " + username)
-            });
-        }
-    })
-
+    const result = await sqlhandler.allResQuery('SELECT * FROM users WHERE username == ?', [username]);
+    if (result.length > 0) {
+        res.status(409).end("Username not available");
+    } else {
+        const otherResult = await sqlhandler.actionQuery('INSERT INTO users(username, password) VALUES (?, ?)', [username, hash]);
+        res.status(201).end("Account created with username " + username)
+    }
 }
 
 //transfer date object tot proper numeric date such as it is in the db
