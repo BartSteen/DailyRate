@@ -1,9 +1,8 @@
 close database?
-make database module or something
 appearance
 make 404 page
-Change password / delete account
+Change password / delete account (account page)
 add email stuff
 nice home and logout buttons
-Clean router code (queries) (sqlite instead of sqlite3 package)
 previous ratings overview / data analysis
+Make date parsing less weird ? (without multiple date objects and w/e)

@@ -13,7 +13,7 @@ router.use((req, res, next) => {
     next();
 })
 
-//main redirect only if the user is logged in
+//main access only if the user is logged in
 router.get("/main", function(req, res, next) {
     if (req.session.loggedin) {
         next();
@@ -32,7 +32,7 @@ router.get("/user", async function (req, res) {
     }
 })
 
-//retrieve ratings
+//retrieve rating on a specific date
 router.get("/rate", async function(req, res) {
     let date = new Date(req.query.dateString);
     let numericDate = getNumericDate(date);
@@ -45,6 +45,7 @@ router.get("/rate", async function(req, res) {
     }
 })
 
+//direct to login page or redirect if user is already logged in
 router.get("/login", function(req, res, next) {
     if (req.session.loggedin) {
         res.redirect("/main");
@@ -53,6 +54,7 @@ router.get("/login", function(req, res, next) {
     }
 })
 
+//logout by destroying the session
 router.get("/logout", function(req, res) {
     if (req.session.loggedin) {
         req.session.destroy();
@@ -88,6 +90,7 @@ router.post("/register", function(req, res) {
     }
 })
 
+//post rating to the db
 router.post("/rate", async function(req, res) {
     let dateString = req.body.dateString;
     let rating = req.body.rating;
