@@ -22,6 +22,15 @@ router.get("/main", function(req, res, next) {
     }
 })
 
+//main access only if the user is logged in
+router.get("/account", function(req, res, next) {
+    if (req.session.loggedin) {
+        next();
+    } else {
+        res.redirect("/login")
+    }
+})
+
 //retrieve username
 router.get("/user", async function (req, res) {
     if (req.session.loggedin) {

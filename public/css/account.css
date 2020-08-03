@@ -1,0 +1,19 @@
+h1 {
+    color: white;
+    font: 64px Helvetica bold;
+    text-align: center;
+}
+
+h3 {
+    color: white;
+    font: 24px Helvetica bold;
+}
+.mainDiv {
+    margin: auto;
+    width: 50%;
+    padding: 100px;
+}
+
+body {
+    background: url("/images/indexBackground.png")
+}

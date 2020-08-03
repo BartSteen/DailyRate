@@ -1,44 +1,36 @@
-let date;
-let username;
 let nameText;
 let rating;
 let showingScale = false;
 
 //get the data of the user currently logged in
-function getUserData() {
-    fetch("/user", {
+async function getUserData() {
+    let response = await fetch("/user", {
         headers: {
             'Content-type': 'application/json'
         }
-    }).then(data => data.json())
-    .then(result => {
-        username = result.username;
-        nameText.innerHTML = username;
     })
+    let jsonRes = await response.json();
+    return jsonRes;
 }
 
 //get the rating data of today
-function getRateData() {
+async function getRateData(date) {
     if (!date) {
         date = new Date();
     }
-    $.ajax({
+    let res = await $.ajax({
         type: "GET",
         url: "/rate",
         data: {dateString: date.toDateString()},
-        success: function(data, status, res) {
-            showRatingText(data.rating);
-        },
-        error: function(err) {
-            alert("Something went wrong")
-        }
     })
+
+    return res.rating;
 }
 
 //sets the page according to if today has been rated yet or not
 function showRatingText(score) {
+    showingScale = true;
     if (score) {
-        showingScale = true;
         toggleScale();
         document.getElementById("scoreText").innerHTML = score;
         document.getElementById("toggleButton").style.display = 'initial'
@@ -66,21 +58,21 @@ function toggleScale() {
 }
 
 //sets the proper initial texts on the page
-function setTexts() {
+async function setTexts() {
     let dateText = document.getElementById("dateText");
     nameText = document.getElementById("nameText");
 
     //show current date
-    date = new Date();
+    let date = new Date();
     dateText.innerHTML = date.toDateString()
 
     //show username
-    if (username) {
-        nameText.innerHTML = username
-    } else {
-        getUserData();
-    }
-    getRateData();
+    let userData = await getUserData();
+    nameText.innerHTML = userData.username;
+
+    //get rating data and display it if necessary
+    let rating = await getRateData(date);
+    showRatingText(rating);
 }
 
 //scale rating buttons actions
@@ -90,6 +82,7 @@ $(".scaleButtons").click(function() {
 
 //rate button action
 $("#rateButton").click(function() {
+    let date = new Date();
     if (!rating) {
         alert("Select a rating first")
     } else {
@@ -98,8 +91,9 @@ $("#rateButton").click(function() {
           type: "POST",
           url: "/rate",
           data: {dateString: date.toDateString(), rating: rating},
-          success: function(data, status, res){
-              getRateData();
+          success: async function(data, status, res){
+              let rating = await getRateData();
+              showRatingText(rating);
           },
           error: function(res) {
               alert("Something went wrong")
@@ -110,22 +104,13 @@ $("#rateButton").click(function() {
 })
 
 //action when specific date rating is clicked
-$("#getRateButton").click(function() {
+$("#getRateButton").click(async function() {
     let dateElem = document.getElementById("dateGiver");
     let textElem = document.getElementById("dateRateText");
     let selectedDate = new Date(dateElem.value)
 
-    $.ajax({
-        type: "GET",
-        url: "/rate",
-        data: {dateString: selectedDate.toDateString()},
-        success: function(data, status, res) {
-            textElem.innerHTML = data.rating;
-        },
-        error: function(err) {
-            alert("Something went wrong")
-        }
-    })
+    textElem.innerHTML = await getRateData(selectedDate);
+
 })
 
 //action to logout from current account and auto redirect
