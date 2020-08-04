@@ -99,6 +99,20 @@ router.post("/register", function(req, res) {
     }
 })
 
+//check if posted password is incorrect
+router.post("/changepw", async function(req, res) {
+    let oldPw = req.body.oldPw;
+    let newPw = req.body.newPw;
+    if (await comparePassword(oldPw, req.session.userID)) {
+        //old pw correct so update
+        const hash = await bcrypt.hash(newPw, saltRounds)
+        let result = await sqlhandler.actionQuery('UPDATE users SET password = ? WHERE id == ?', [hash, req.session.userID]);
+        res.status(200).end("It's a match");
+    } else {
+        res.status(401).end("Does not match")
+    }
+})
+
 //post rating to the db
 router.post("/rate", async function(req, res) {
     let dateString = req.body.dateString;
@@ -147,6 +161,14 @@ async function attemptRegister(username, password, res) {
         const otherResult = await sqlhandler.actionQuery('INSERT INTO users(username, password) VALUES (?, ?)', [username, hash]);
         res.status(201).end("Account created with username " + username)
     }
+}
+
+//compares password in the parameter with the currently logged in user password
+async function comparePassword(password, uid) {
+    //get the user row
+    const result = await sqlhandler.singleResQuery('SELECT * FROM users WHERE id == ?', [uid]);
+    const match =  await bcrypt.compare(password, result.password);
+    return match;
 }
 
 //transfer date object tot proper numeric date such as it is in the db

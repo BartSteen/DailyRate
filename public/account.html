@@ -5,12 +5,20 @@
         <title>Account</title>
         <link rel="stylesheet" href="/css/account.css", type="text/css">
     </head>
-    <body>
+    <body onload="setUp()">
         <div class="mainDiv">
             <h1>Your account</h1>
             <h3>Username:</h3><h3 id="usernameText"></h3><br>
             <h3>Email:</h3><h3 id="emailText"></h3><br>
             <h3>Password:</h3>
+            <button type="button" name="changePwButton" onclick="">Change password</button>
+            <div class="accountDiv passwordDiv">
+                <input type="password" name="oldPw" id="oldPw" placeholder="Old Password">
+                <input type="password" name="newPw" id="newPw" placeholder="New Password">
+                <input type="password" name="newPw2" id="newPw2" placeholder="New Password confirmation">
+                <button type="button" name="sendPwChange" id="sendPwChange" onclick="changePw()">Change</button>
+            </div>
+            <h3>Delete Account</h3><br>
         </div>
     </body>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
