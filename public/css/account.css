@@ -7,11 +7,40 @@ h1 {
 h3 {
     color: white;
     font: 24px Helvetica bold;
+    display: inline;
 }
+
 .mainDiv {
     margin: auto;
-    width: 50%;
+    width: 40%;
     padding: 100px;
+    clear: both;
+}
+
+.passwordDiv {
+    margin: auto;
+    width: 50%;
+    text-align: center;
+    display: none;
+}
+
+.material-icons.icon {
+    font-size: 32px;
+    color: white;
+}
+
+.iconButton {
+    border-radius: 50%;
+    background-color: Transparent;
+    border: 2px solid white;
+}
+
+.iconButton:hover {
+    background: rgba(211, 211, 211, 0.4);
+}
+
+#showChangePwButton {
+    float: right;
 }
 
 body {

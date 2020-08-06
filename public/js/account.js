@@ -7,7 +7,16 @@ async function getUserData() {
     })
     const jsonRes = await response.json();
 
-    return jsonRes;
+    return jsonRes.username;
+}
+
+function togglePwDiv() {
+    let passwordDiv = document.getElementById("passwordDiv")
+    if (passwordDiv.style.display == "block") {
+        passwordDiv.style.display = 'none';
+    } else {
+        passwordDiv.style.display = 'block'
+    }
 }
 
 //setup page properly

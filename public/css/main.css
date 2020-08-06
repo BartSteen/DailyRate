@@ -88,6 +88,21 @@ body {
     border: 2px solid green;
 }
 
+.iconButton {
+    border-radius: 50%;
+    background-color: Transparent;
+    border: 2px solid white;
+}
+
+.iconButton:hover {
+    background: rgba(211, 211, 211, 0.4);
+}
+
+.material-icons.icon {
+    font-size: 32px;
+    color: white;
+}
+
 .scoreText {
     display: inline;
 }

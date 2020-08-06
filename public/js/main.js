@@ -29,8 +29,8 @@ async function getRateData(date) {
 
 //sets the page according to if today has been rated yet or not
 function showRatingText(score) {
-    showingScale = true;
     if (score) {
+        showingScale = true;
         toggleScale();
         document.getElementById("scoreText").innerHTML = score;
         document.getElementById("toggleButton").style.display = 'initial'

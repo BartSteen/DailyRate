@@ -4,19 +4,21 @@
         <meta charset="utf-8">
         <title>Account</title>
         <link rel="stylesheet" href="/css/account.css", type="text/css">
+        <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
     </head>
     <body onload="setUp()">
+        <button type="button" name="homeButton" class="iconButton" onclick="location.href='main'"><i class="icon material-icons">home</i></button>
         <div class="mainDiv">
             <h1>Your account</h1>
             <h3>Username:</h3><h3 id="usernameText"></h3><br>
             <h3>Email:</h3><h3 id="emailText"></h3><br>
             <h3>Password:</h3>
-            <button type="button" name="changePwButton" onclick="">Change password</button>
-            <div class="accountDiv passwordDiv">
-                <input type="password" name="oldPw" id="oldPw" placeholder="Old Password">
-                <input type="password" name="newPw" id="newPw" placeholder="New Password">
-                <input type="password" name="newPw2" id="newPw2" placeholder="New Password confirmation">
-                <button type="button" name="sendPwChange" id="sendPwChange" onclick="changePw()">Change</button>
+            <button type="button" name="showChangePwButton" id="showChangePwButton" onclick="togglePwDiv()">Change password</button><br>
+            <div class="accountDiv passwordDiv", id="passwordDiv">
+                <input type="password" name="oldPw" id="oldPw" placeholder="Old Password"><br>
+                <input type="password" name="newPw" id="newPw" placeholder="New Password"><br>
+                <input type="password" name="newPw2" id="newPw2" placeholder="New Password confirmation"><br>
+                <button type="button" name="sendPwChange" id="sendPwChange" onclick="changePw()">Change</button><br>
             </div>
             <h3>Delete Account</h3><br>
         </div>
