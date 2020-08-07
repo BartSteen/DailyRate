@@ -54,6 +54,16 @@ router.get("/rate", async function(req, res) {
     }
 })
 
+//retrieve rating of all dates filled
+router.get("/allratings", async function(req, res) {
+    const result = await sqlhandler.allResQuery('SELECT date, rating FROM ratings where userid == ?', [req.session.userID]);
+    if (result) {
+        res.json(result);
+    } else {
+        res.end();
+    }
+})
+
 //direct to login page or redirect if user is already logged in
 router.get("/login", function(req, res, next) {
     if (req.session.loggedin) {
