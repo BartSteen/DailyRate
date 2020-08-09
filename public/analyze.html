@@ -5,12 +5,14 @@
         <title>Analyze</title>
         <link rel="stylesheet" href="/css/general.css", type="text/css">
         <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+        <script src="https://d3js.org/d3.v5.min.js"></script>
     </head>
     <body onload="initialAnalysis()">
         <button type="button" name="homeButton" class="iconButton" onclick="location.href='main'"><i class="icon material-icons">home</i></button>
         <div class="centeredDiv">
             <h3>Numer of ratings: </h3><h3 id="amountText"></h3><br>
             <h3>Average rating: </h3><h3 id="averageText"></h3><br>
+            <svg id="barSvg" width="500" height="500"></svg>
         </div>
     </body>
     <script src="js/analyze.js"></script>
