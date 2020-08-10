@@ -1,3 +1,5 @@
+let visColour = '#7eedac';
+
 async function initialAnalysis() {
     let ratings = await getAllRatingData();
     let scores = getScores(ratings);
@@ -6,7 +8,9 @@ async function initialAnalysis() {
     document.getElementById("averageText").innerHTML = Math.round(average * 100)/100;
 
     //visualization
-    visBar(scores);
+    let counts = countScores(scores);
+    visBar(counts);
+    visBoxPlot(scores)
 }
 
 //get all ratings of current user
@@ -37,20 +41,20 @@ function getScores(ratings) {
     return vals;
 }
 
-function visBar(scores) {
+function visBar(counts) {
     let svg = d3.select("#barSvg");
     let margin = 50;
     let height = svg.attr("height") - 2 * margin;
     let width = svg.attr("width") - 2 * margin;
 
-
-    let counts = countScores(scores);
     let maxY = getMaxCount(counts)
 
+    //get space with margins taken off
     let chart = svg.append('g')
         .attr('transform', `translate(${margin}, ${margin})`)
 
 
+    //x and y scale
     const xScale = d3.scaleBand()
                     .range([0, width])
                     .domain(Object.keys(counts))
@@ -60,6 +64,7 @@ function visBar(scores) {
                     .domain([0, maxY])
                     .range([height, 0]);
 
+//add the axis
     chart.append("g")
         .attr('transform', 'translate(0, ' + height +  ')')
         .attr('class', 'axis')
@@ -85,10 +90,11 @@ function visBar(scores) {
         let n = i;
         chart.append('rect')
             .attr('x', xScale(i))
-            .attr('y', yScale(counts[i]))
-            .attr('height', height - yScale(counts[i]))
+            .attr('y', yScale(counts[i]) + 1)
+            .attr('height', height - yScale(counts[i]) - 1)
             .attr('width', xScale.bandwidth())
-            .attr('fill', '#7eedac')
+            .attr('fill', visColour)
+            .attr('stroke', 'white')
             .append("title")
 		        .text(counts[n])
     }
@@ -102,13 +108,86 @@ function visBar(scores) {
     .attr('text-anchor', 'middle')
     .text('Amount')
 
-svg.append('text')
-    .attr('x', width / 2 + margin)
-    .attr('fill', '#ffffff')
-    .attr('y', height + 2 * margin)
-    .attr('text-anchor', 'middle')
-    .text('Rating')
+    svg.append('text')
+        .attr('x', width / 2 + margin)
+        .attr('fill', '#ffffff')
+        .attr('y', height + 2 * margin)
+        .attr('text-anchor', 'middle')
+        .text('Rating')
 
+}
+
+function visBoxPlot(scores) {
+    let svg = d3.select("#boxPlotSvg");
+    let margin = 30;
+    let height = svg.attr("height") - 2 * margin;
+    let width = svg.attr("width") - 2 * margin;
+
+    //get space with margins taken off
+    let chart = svg.append('g')
+        .attr('transform', `translate(${margin}, ${margin})`)
+
+    let strokeWidth = 2;
+    //interesting data things for which i forgot the collective name
+    let sortedScores = scores.sort(d3.ascending)
+    let q1 = d3.quantile(sortedScores, .25);
+    let median = d3.quantile(sortedScores, .5);
+    let q3 = d3.quantile(sortedScores, .75);
+    let iqRange = q3 - q1
+    let min = sortedScores[0];
+    let max = sortedScores[sortedScores.length - 1];
+/*
+    let min = q1 - 1.5 * iqRange;
+    let max = q3 + 1.5 * iqRange;
+*/
+    //the xScale
+    let xScale = d3.scaleLinear()
+        .domain([0,10])
+        .range([0, width]);
+
+    chart.append('g')
+        .attr('class', 'axis')
+        .attr('transform', 'translate(0, ' + height +  ')')
+        .call(d3.axisBottom(xScale))
+
+    //draw lines
+    chart.append('line')
+        .attr('x1', xScale(min))
+        .attr('x2', xScale(max))
+        .attr('y1', height/2)
+        .attr('y2', height/2)
+        .attr('stroke', 'white')
+        .attr('stroke-width', strokeWidth)
+
+    //draw boxPlotSvg
+    chart.append('rect')
+        .attr('x', xScale(q1))
+        .attr('y', height * 2/6)
+        .attr('height', height/3)
+        .attr('width', xScale(q3) - xScale(q1))
+        .attr('stroke', 'white')
+        .attr('stroke-width', strokeWidth)
+        .attr('fill', visColour);
+
+    //other lines
+    chart.append('g').selectAll('lines')
+    .data([min, median, max])
+        .enter()
+        .append('line')
+        .attr('y1', height * 2/6)
+        .attr('y2', height * 4/6)
+        .attr('x1', function(d) {return xScale(d)})
+        .attr('x2', function(d) {return xScale(d)})
+        .attr('stroke', 'white')
+        .attr('stroke-width', strokeWidth)
+
+    //labels
+    svg.append('text')
+        .attr('x', width / 2 + margin)
+        .attr('fill', '#ffffff')
+        .attr('y', height + 2 * margin)
+        .attr('text-anchor', 'middle')
+        .text('Rating')
 }
 
 function countScores(scores) {
