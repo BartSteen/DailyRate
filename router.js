@@ -2,6 +2,8 @@ var express = require('express');
 const sqlhandler = require("./sqlhandler.js")
 var router = express.Router();
 const bcrypt = require('bcrypt');
+const formidable = require('formidable');
+const fs = require('fs');
 const saltRounds = 10;
 
 //open db
@@ -148,6 +150,27 @@ router.post("/rate", async function(req, res) {
     //insert it into the table or replace it if a rating for today already exists
     const result = await sqlhandler.actionQuery('REPLACE INTO ratings(userid, date, rating) VALUES (?, ?, ?)', [req.session.userID, numericDateString, rating]);
     res.status(200).end("Rating stored")
+})
+
+router.post("/importRatings", function(req, res) {
+    let form = formidable({keepExtensions: true})
+    form.parse(req, async function(err, fields, file) {
+            let data = await fs.readFileSync(file['importFileButton'].path, 'utf-8')
+            //parse the strings
+            let lines = data.split('\n');
+            for (i = 0; i < lines.length; i++) {
+                let lineSplit = lines[i].split(",") //one and tow
+                if (lineSplit[1]) {
+                    let date = lineSplit[0];
+                    let rating = lineSplit[1];
+
+                    //post it
+                    let result = await sqlhandler.actionQuery('REPLACE INTO ratings(userid, date, rating) VALUES (?,?,?)', [req.session.userID, date, rating]);
+                }
+            }
+
+            res.end("Succesfully added")
+    })
 })
 
 //attempts a login with the username and password and handles the response

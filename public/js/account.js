@@ -1,3 +1,5 @@
+let username;
+
 //get the data of the user currently logged in
 async function getUserData() {
     const response = await fetch("/user", {
@@ -10,18 +12,43 @@ async function getUserData() {
     return jsonRes.username;
 }
 
+//get all ratings of current user
+async function getAllRatingData() {
+    let response = await fetch("/allratings", {
+        headers: {
+            'Content-type': 'application/json'
+        }
+    })
+    let jsonRes = await response.json();
+    console.log(jsonRes);
+    return jsonRes;
+}
+
 function togglePwDiv() {
-    let passwordDiv = document.getElementById("passwordDiv")
-    if (passwordDiv.style.display == "block") {
-        passwordDiv.style.display = 'none';
+    toggleDiv(document.getElementById("passwordDiv"))
+}
+
+function toggleImportDiv() {
+    document.getElementById("exportDiv").style.display = 'none'
+    toggleDiv(document.getElementById("importDiv"))
+}
+
+function toggleExportDiv() {
+    document.getElementById("importDiv").style.display = 'none'
+    toggleDiv(document.getElementById("exportDiv"))
+}
+
+function toggleDiv(div) {
+    if (div.style.display == "block") {
+        div.style.display = 'none'
     } else {
-        passwordDiv.style.display = 'block'
+        div.style.display = 'block'
     }
 }
 
 //setup page properly
 async function setUp() {
-    let username = await getUserData();
+    username = await getUserData();
     document.getElementById("usernameText").innerHTML = username;
 
 }
@@ -62,4 +89,26 @@ async function updatePw(oldPw, newPw) {
           }
       }
     })
+}
+
+async function downloadRatings() {
+    let ratings = await getAllRatingData();
+
+    //make it a csv
+    let csvContent = "data:text/csv;charset=utf-8,";
+    for (i = 0; i < ratings.length; i++) {
+        csvContent += ratings[i].date + "," + ratings[i].rating;
+        if (i < ratings.length-1) {
+            csvContent += "\n"
+        }
+    }
+
+    //downlaod the thing
+    let encodedUri = encodeURI(csvContent);
+    let link = document.createElement("a");
+    link.setAttribute("href", encodedUri);
+    link.setAttribute("download", "ratings-" + username.toLowerCase() +".csv" )
+    document.body.appendChild(link);
+
+    link.click()
 }
