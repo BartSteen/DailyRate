@@ -169,7 +169,8 @@ router.post("/importRatings", function(req, res) {
                 }
             }
 
-            res.end("Succesfully added")
+            res.redirect('/account')
+            //res.status(200).end("Succesfully added")
     })
 })
 

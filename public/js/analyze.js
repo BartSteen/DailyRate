@@ -9,8 +9,10 @@ async function initialAnalysis() {
 
     //visualization
     let counts = countScores(scores);
+    let dateRatings = getDateObjArray(ratings)
     visBar(counts);
     visBoxPlot(scores)
+    visTimePlot(dateRatings)
 }
 
 //get all ratings of current user
@@ -91,7 +93,7 @@ function visBar(counts) {
         chart.append('rect')
             .attr('x', xScale(i))
             .attr('y', yScale(counts[i]) + 1)
-            .attr('height', height - yScale(counts[i]) - 1)
+            .attr('height', Math.max(height - yScale(counts[i]) - 1, 0))
             .attr('width', xScale.bandwidth())
             .attr('fill', visColour)
             .attr('stroke', 'white')
@@ -188,6 +190,65 @@ function visBoxPlot(scores) {
         .attr('y', height + 2 * margin)
         .attr('text-anchor', 'middle')
         .text('Rating')
+}
+
+function visTimePlot(dateRatings) {
+    let svg = d3.select("#datePlotSvg");
+    let margin = 30;
+    let height = svg.attr("height") - 2 * margin;
+    let width = svg.attr("width") - 2 * margin;
+
+    //get space with margins taken off
+    let chart = svg.append('g')
+        .attr('transform', `translate(${margin}, ${margin})`);
+
+    //sort the array
+    dateRatings.sort((a, b) => a.date - b.date)
+
+    //get the scales
+    let xScale = d3.scaleTime()
+            .domain(d3.extent(dateRatings, function(d) {
+                return d.date
+            }))
+            .range([0, width]);
+
+    let yScale = d3.scaleLinear()
+                .domain([0, 10])
+                .range([height, 0]);
+
+    //add the axis
+    chart.append("g")
+        .attr('transform', 'translate(0, ' + height +  ')')
+        .attr('class', 'axis')
+        .call(d3.axisBottom(xScale));
+
+    chart.append("g")
+        .attr('class', 'axis')
+        .call(d3.axisLeft(yScale));
+
+    //add the line
+    chart.append("path")
+      .datum(dateRatings)
+      .attr("fill", "none")
+      .attr("stroke", visColour)
+      .attr("stroke-width", 1.5)
+      .attr("d", d3.line()
+        .x(function(d) { return xScale(d.date) })
+        .y(function(d) { return yScale(d.rating) }))
+
+
+}
+
+function getDateObjArray(ratings) {
+    let dateRatings = []
+    for (i = 0; i < ratings.length; i++) {
+        let curDate = ratings[i].date;
+        let year = curDate.split("-")[2];
+        let month = curDate.split("-")[1] - 1;
+        let day = curDate.split("-")[0];
+        dateRatings.push({date: new Date(year, month, day), rating: ratings[i].rating})
+    }
+    return dateRatings;
 }
 
 function countScores(scores) {

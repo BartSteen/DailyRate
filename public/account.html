@@ -25,9 +25,9 @@
             <button type="button" class='generalButton' name="showExportButton" id='showExportButton' onclick='toggleExportDiv()'>Export</button><br>
             <div class='nestedDiv initHidden' id='importDiv'>
                 <form action='/importRatings' method='post' enctype="multipart/form-data">
-                <input type="file" class='fileButton' name="importFileButton" id='importFileButton' value="" accept=".csv">
-                <input type="submit">
-            </form>
+                    <input type="file" class='fileButton' name="importFileButton" id='importFileButton' value="" accept=".csv">
+                    <input type="submit">
+                </form>
             </div>
             <div class='nestedDiv initHidden' id='exportDiv'>
                 <button type="button" name="downloadRatingsButton" id="downloadRatingsButton" onclick="downloadRatings()">Download</button>

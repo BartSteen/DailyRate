@@ -8,4 +8,4 @@ Make date parsing less weird ? (without multiple date objects and w/e)
 jquery using statusCode instead of succes/error
 text on home page
 selected score on rating scale visual cue
-jquery form submit on file upload
+indication of succesful importation of data
