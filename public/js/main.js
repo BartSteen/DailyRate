@@ -78,14 +78,15 @@ async function setTexts() {
 //scale rating buttons actions
 $(".scaleButtons").click(function() {
     rating = parseInt(this.textContent);
+
 })
 
 //rate button action
 $("#rateButton").click(function() {
-    let date = new Date();
     if (!rating) {
         alert("Select a rating first")
     } else {
+        let date = new Date();
         //post it to the server
         $.ajax({
           type: "POST",

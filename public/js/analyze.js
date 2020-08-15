@@ -1,18 +1,20 @@
-let visColour = '#7eedac';
+let visColour = '#7eedac'; //general accent colour of the visualizations
+let daysInWeek = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 
+
+//initiates all the analyses/visualizations
 async function initialAnalysis() {
-    let ratings = await getAllRatingData();
-    let scores = getScores(ratings);
-    let average = calculateAverage(scores);
-    document.getElementById("amountText").innerHTML = scores.length;
-    document.getElementById("averageText").innerHTML = Math.round(average * 100)/100;
+    //get the ratings in different formats
+    let ratings = await getAllRatingData(); // array of json of date string - ratings
+
+    setTextualInfo(ratings);
 
     //visualization
-    let counts = countScores(scores);
-    let dateRatings = getDateObjArray(ratings)
-    visBar(counts);
-    visBoxPlot(scores)
-    visTimePlot(dateRatings)
+    visBar(ratings);
+    visBoxPlot(ratings)
+    visTimePlot(ratings)
+
+    visAverageDay(ratings)
 }
 
 //get all ratings of current user
@@ -27,14 +29,7 @@ async function getAllRatingData() {
     return jsonRes;
 }
 
-function calculateAverage(scores) {
-    let sum = 0;
-    for (i = 0; i < scores.length; i++) {
-        sum += scores[i];
-    }
-    return sum / scores.length;
-}
-
+//returns an array with only the ratings
 function getScores(ratings) {
     let vals = [];
     for (i = 0; i < ratings.length; i++) {
@@ -43,18 +38,96 @@ function getScores(ratings) {
     return vals;
 }
 
-function visBar(counts) {
+//returns an array with jsons with date objects and their ratings
+function getDateObjArray(ratings) {
+    let dateRatings = []
+    for (i = 0; i < ratings.length; i++) {
+        let curDate = ratings[i].date;
+        let year = curDate.split("-")[2];
+        let month = curDate.split("-")[1] - 1;
+        let day = curDate.split("-")[0];
+        dateRatings.push({date: new Date(year, month, day), rating: ratings[i].rating})
+    }
+    return dateRatings;
+}
+
+//returns array of json with day of week - sum of ratings on that day- n of ratings
+function getWeekDayAverages(ratings) {
+    let datedRatings = getDateObjArray(ratings);
+    let sumRatings = [];
+    let count = [];
+
+    //init all days at 0
+    for (i = 0; i < daysInWeek.length; i++) {
+        sumRatings.push(0);
+        count.push(0)
+    }
+
+    for (i = 0; i < datedRatings.length; i++) {
+        let day = datedRatings[i].date.getDay();
+        sumRatings[day] += datedRatings[i].rating
+        count[day] += 1;
+    }
+
+    let averages = []
+    for (i = 0; i < sumRatings.length; i++) {
+        if (count[i] == 0) {
+            averages.push(0);
+        } else {
+            averages.push(sumRatings[i] / count[i])
+        }
+    }
+    return averages
+}
+
+//returns a json with each score counted in how much it is in the ratings
+function countScores(ratings) {
+    let counting = {1: 0, 2: 0, 3: 0, 4:0, 5:0, 6:0, 7:0, 8:0, 9:0, 10:0}
+    for (i = 0; i < ratings.length; i++) {
+        counting[ratings[i].rating] += 1;
+    }
+    return counting;
+}
+
+//returns the average of the array
+function calculateAverage(ratings) {
+    let sum = 0;
+    for (i = 0; i < ratings.length; i++) {
+        sum += ratings[i].rating;
+    }
+    return sum / ratings.length;
+}
+
+//gets the max of and non-negative containing array
+function getMaxCount(counts) {
+    let max = 0;
+    for (i in counts) {
+        max = Math.max(max, counts[i])
+    }
+    return max;
+}
+
+function setTextualInfo(ratings) {
+    let average = calculateAverage(ratings);
+    document.getElementById("amountText").innerHTML = ratings.length;
+    document.getElementById("averageText").innerHTML = Math.round(average * 100)/100;
+}
+
+//bar plot visualizatoin
+function visBar(ratings) {
     let svg = d3.select("#barSvg");
     let margin = 50;
     let height = svg.attr("height") - 2 * margin;
-    let width = svg.attr("width") - 2 * margin;
-
-    let maxY = getMaxCount(counts)
+    let width = svg.attr("width") - 2 * margin
 
     //get space with margins taken off
     let chart = svg.append('g')
         .attr('transform', `translate(${margin}, ${margin})`)
 
+    //get data in proper format
+    let counts = countScores(ratings);
+
+    let maxY = getMaxCount(counts)
 
     //x and y scale
     const xScale = d3.scaleBand()
@@ -66,7 +139,7 @@ function visBar(counts) {
                     .domain([0, maxY])
                     .range([height, 0]);
 
-//add the axis
+    //add the axis
     chart.append("g")
         .attr('transform', 'translate(0, ' + height +  ')')
         .attr('class', 'axis')
@@ -101,14 +174,16 @@ function visBar(counts) {
 		        .text(counts[n])
     }
 
+
+
     //labels
     svg.append('text')
-    .attr('x', -(height / 2) - margin)
-    .attr('y', margin / 2.4)
-    .attr('fill', '#ffffff')
-    .attr('transform', 'rotate(-90)')
-    .attr('text-anchor', 'middle')
-    .text('Amount')
+        .attr('x', -(height / 2) - margin)
+        .attr('y', margin / 2.4)
+        .attr('fill', '#ffffff')
+        .attr('transform', 'rotate(-90)')
+        .attr('text-anchor', 'middle')
+        .text('Amount')
 
     svg.append('text')
         .attr('x', width / 2 + margin)
@@ -119,7 +194,8 @@ function visBar(counts) {
 
 }
 
-function visBoxPlot(scores) {
+//visualize a box plot
+function visBoxPlot(ratings) {
     let svg = d3.select("#boxPlotSvg");
     let margin = 30;
     let height = svg.attr("height") - 2 * margin;
@@ -128,6 +204,9 @@ function visBoxPlot(scores) {
     //get space with margins taken off
     let chart = svg.append('g')
         .attr('transform', `translate(${margin}, ${margin})`)
+
+    //get data in proper formats
+    let scores = getScores(ratings);
 
     let strokeWidth = 2;
     //interesting data things for which i forgot the collective name
@@ -172,8 +251,8 @@ function visBoxPlot(scores) {
         .attr('fill', visColour);
 
     //other lines
-    chart.append('g').selectAll('lines')
-    .data([min, median, max])
+    chart.selectAll('idk')
+        .data([min, median, max])
         .enter()
         .append('line')
         .attr('y1', height * 2/6)
@@ -192,7 +271,8 @@ function visBoxPlot(scores) {
         .text('Rating')
 }
 
-function visTimePlot(dateRatings) {
+//visualize the over time ratings plot
+function visTimePlot(ratings) {
     let svg = d3.select("#datePlotSvg");
     let margin = 30;
     let height = svg.attr("height") - 2 * margin;
@@ -201,6 +281,9 @@ function visTimePlot(dateRatings) {
     //get space with margins taken off
     let chart = svg.append('g')
         .attr('transform', `translate(${margin}, ${margin})`);
+
+    //get proper data formats
+    let dateRatings = getDateObjArray(ratings)
 
     //sort the array
     dateRatings.sort((a, b) => a.date - b.date)
@@ -236,33 +319,94 @@ function visTimePlot(dateRatings) {
         .x(function(d) { return xScale(d.date) })
         .y(function(d) { return yScale(d.rating) }))
 
+    //labels
+    svg.append('text')
+        .attr('x', -(height / 2) - margin)
+        .attr('y', margin / 2.4)
+        .attr('fill', '#ffffff')
+        .attr('transform', 'rotate(-90)')
+        .attr('text-anchor', 'middle')
+        .text('Rating')
 
+    svg.append('text')
+        .attr('x', width / 2 + margin)
+        .attr('fill', '#ffffff')
+        .attr('y', height + 2 * margin)
+        .attr('text-anchor', 'middle')
+        .text('Date')
 }
 
-function getDateObjArray(ratings) {
-    let dateRatings = []
-    for (i = 0; i < ratings.length; i++) {
-        let curDate = ratings[i].date;
-        let year = curDate.split("-")[2];
-        let month = curDate.split("-")[1] - 1;
-        let day = curDate.split("-")[0];
-        dateRatings.push({date: new Date(year, month, day), rating: ratings[i].rating})
-    }
-    return dateRatings;
-}
+function visAverageDay(ratings) {
+    let svg = d3.select("#averageDaySvg");
+    let margin = 30;
+    let height = svg.attr("height") - 2 * margin;
+    let width = svg.attr("width") - 2 * margin;
 
-function countScores(scores) {
-    let counting = {1: 0, 2: 0, 3: 0, 4:0, 5:0, 6:0, 7:0, 8:0, 9:0, 10:0}
-    for (i = 0; i < scores.length; i++) {
-        counting[scores[i]] += 1;
-    }
-    return counting;
-}
+    //get space with margins taken off
+    let chart = svg.append('g')
+        .attr('transform', `translate(${margin}, ${margin})`);
 
-function getMaxCount(counts) {
-    let max = 0;
-    for (i in counts) {
-        max = Math.max(max, counts[i])
-    }
-    return max;
+    //get data in proper format
+    weekDayAverages = getWeekDayAverages(ratings)
+
+    //x and y scale
+    const xScale = d3.scaleBand()
+                    .domain(daysInWeek)
+                    .range([0, width])
+                    .padding(0.25)
+
+    const yScale = d3.scaleLinear()
+                    .domain([0, 10])
+                    .range([height, 0]);
+
+    //add the axis
+    chart.append("g")
+        .attr('transform', 'translate(0, ' + height +  ')')
+        .attr('class', 'axis')
+        .call(d3.axisBottom(xScale));
+
+    chart.append("g")
+        .attr('class', 'axis')
+        .call(d3.axisLeft(yScale)
+        .ticks(10)
+        .tickFormat(d3.format('d')));
+
+        //horizontal grid
+        chart.append('g')
+        .attr('class', 'grid')
+        .call(d3.axisLeft()
+            .scale(yScale)
+            .ticks(10)
+            .tickSize(-width, 0, 0)
+            .tickFormat(''))
+
+    //add bars
+        chart.append('g').selectAll('idk')
+        .data(weekDayAverages)
+        .enter()
+        .append('rect')
+        .attr('x', function(d, i) {return xScale(daysInWeek[i])})
+        .attr('y', function(d) {return yScale(d) + 1})
+            .attr('height', function(d) {return Math.max(height - yScale(d) - 1, 0)})
+            .attr('width', xScale.bandwidth())
+            .attr('fill', visColour)
+            .attr('stroke', 'white')
+            .append("title")
+		        .text(function(d) {return d})
+
+    //labels
+    svg.append('text')
+        .attr('x', -(height / 2) - margin)
+        .attr('y', margin / 2.4)
+        .attr('fill', '#ffffff')
+        .attr('transform', 'rotate(-90)')
+        .attr('text-anchor', 'middle')
+        .text('Day')
+
+    svg.append('text')
+        .attr('x', width / 2 + margin)
+        .attr('fill', '#ffffff')
+        .attr('y', height + 2 * margin)
+        .attr('text-anchor', 'middle')
+        .text('Average Rating')
 }

@@ -1,9 +1,8 @@
 close database?
 appearance
-make 404 page
 delete account (account page)
 add email stuff
-Ratings data analysis (nice graphs and such)
+Ratings data analysis (nice graphs and such) (average per weekday)
 Make date parsing less weird ? (without multiple date objects and w/e)
 jquery using statusCode instead of succes/error
 text on home page
