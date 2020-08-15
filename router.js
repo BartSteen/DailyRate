@@ -222,7 +222,7 @@ function getNumericDate(date) {
 //404 page
 router.use(function(req, res) {
     res.status(404);
-    res.end("404 ERROR")
+    res.sendFile(__dirname + "/public/404.html")
 })
 
 module.exports = router;
