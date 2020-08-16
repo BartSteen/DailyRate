@@ -2,9 +2,10 @@ close database?
 appearance
 delete account (account page)
 add email stuff
-Ratings data analysis (nice graphs and such) (average per weekday)
+Ratings data analysis (nice graphs and such)
 Make date parsing less weird ? (without multiple date objects and w/e)
 jquery using statusCode instead of succes/error
 text on home page
 selected score on rating scale visual cue
 indication of succesful importation of data
+confirmation popup on certain actions

@@ -75,11 +75,29 @@ async function setTexts() {
     showRatingText(rating);
 }
 
+//colour the scale buttons
+$(".scaleButtons").each(function(i) {
+    let scalingFactor = 255/9;
+    let redVal = Math.round(255 - scalingFactor * (this.textContent - 1));
+    let greenVal = Math.round(scalingFactor * (this.textContent - 1));
+    this.style.backgroundColor = `rgb(${redVal}, ${greenVal}, 70)`;
+})
+
 //scale rating buttons actions
 $(".scaleButtons").click(function() {
     rating = parseInt(this.textContent);
-
+    indicateChoice();
 })
+
+function indicateChoice() {
+    $(".scaleButtons").each(function(i) {
+        if (this.textContent == rating) {
+            this.style.fontSize = "36px";
+        } else {
+            this.style.fontSize = "24px";
+        }
+    })
+}
 
 //rate button action
 $("#rateButton").click(function() {

@@ -103,7 +103,7 @@ body {
 }
 
 .roundButtons:hover {
-    background-color: white; /* Green */
+    background-color: white !important; /* Green */
     color: black;
     border: 2px solid green;
 }

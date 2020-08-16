@@ -159,7 +159,7 @@ router.post("/importRatings", function(req, res) {
             //parse the strings
             let lines = data.split('\n');
             for (i = 0; i < lines.length; i++) {
-                let lineSplit = lines[i].split(",") //one and tow
+                let lineSplit = lines[i].split(",") //first elem is date, second is rating
                 if (lineSplit[1]) {
                     let date = lineSplit[0];
                     let rating = lineSplit[1];
