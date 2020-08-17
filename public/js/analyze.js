@@ -113,6 +113,7 @@ function setTextualInfo(ratings) {
     document.getElementById("averageText").innerHTML = Math.round(average * 100)/100;
 }
 
+
 //bar plot visualizatoin
 function visBar(ratings) {
     let svg = d3.select("#barSvg");

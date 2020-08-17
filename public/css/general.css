@@ -31,6 +31,10 @@ body {
     text-align: center;
 }
 
+.boxedDiv {
+    background: rgba(128, 128, 128, 0.2);
+    border: 1px ridge white;
+}
 
 .nestedDiv {
     margin: auto;
@@ -58,7 +62,7 @@ body {
     border: 2px solid green;
 }
 
-.fileButton {
+.smallButton {
     background-color: #4CAF50; /* Green */
     border: 2px solid white;
     color: white;
@@ -72,7 +76,7 @@ body {
     transition-duration: 0.4s;
 }
 
-.fileButton:hover {
+.smallButton:hover {
     background-color: white; /* Green */
     color: black;
     border: 2px solid green;
@@ -97,7 +101,7 @@ body {
     text-decoration: none;
     display: inline-block;
     font-size: 20px;
-    margin: 12px;
+    margin: 5px;
     border-radius: 50%;
     transition-duration: 0.4s;
 }

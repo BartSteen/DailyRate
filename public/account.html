@@ -8,31 +8,35 @@
     </head>
     <body onload="setUp()">
         <button type="button" name="homeButton" class="iconButton" onclick="location.href='main'"><i class="icon material-icons">home</i></button>
-        <div class="centeredDiv">
+        <div class="centeredDiv boxedDiv">
             <h1>Your account</h1>
             <h3>Username:</h3><h3 id="usernameText"></h3><br>
             <h3>Email:</h3><h3 id="emailText"></h3><br>
             <h3>Password:</h3>
             <button type="button" class='generalButton' name="showChangePwButton" id="showChangePwButton" onclick="togglePwDiv()">Change password</button><br>
             <div class="nestedDiv initHidden", id="passwordDiv">
-                <input type="password" class="logInput" name="oldPw" id="oldPw" placeholder="Old Password"><br>
                 <input type="password" class="logInput" name="newPw" id="newPw" placeholder="New Password"><br>
                 <input type="password" class="logInput" name="newPw2" id="newPw2" placeholder="New Password confirmation"><br>
-                <button type="button" name="sendPwChange" id="sendPwChange" onclick="changePw()">Change</button><br>
+                <button type="button" class="smallButton" name="sendPwChange" id="sendPwChange" onclick="changePw()">Change</button><br>
             </div>
             <h3>Ratings:</h3>
             <button type="button" class='generalButton' name="showImportButton" id='showImportButton' onclick='toggleImportDiv()'>Import</button>
             <button type="button" class='generalButton' name="showExportButton" id='showExportButton' onclick='toggleExportDiv()'>Export</button><br>
             <div class='nestedDiv initHidden' id='importDiv'>
-                <form action='/importRatings' method='post' enctype="multipart/form-data">
-                    <input type="file" class='fileButton' name="importFileButton" id='importFileButton' value="" accept=".csv">
-                    <input type="submit">
+                <form action='/importRatings' id="importForm" method='post' enctype="multipart/form-data">
+                    <input type="file" class='smallButton' name="importFileButton" id='importFileButton' value="" accept=".csv">
+                    <button type="button" class="smallButton" name="submitButton" id="submitFormButton">Submit</button>
                 </form>
             </div>
             <div class='nestedDiv initHidden' id='exportDiv'>
-                <button type="button" name="downloadRatingsButton" id="downloadRatingsButton" onclick="downloadRatings()">Download</button>
+                <button type="button" class="smallButton" name="downloadRatingsButton" id="downloadRatingsButton" onclick="downloadRatings()">Download ratings</button>
             </div>
             <h3>Delete Account</h3><br>
+            <button type="button" class="generalButton" name="showDelButton" id="showDelButton" onclick="toggleDelDiv()">Delete Account</button>
+            <div class="nestedDiv initHidden" id="delDiv">
+                <input type="password" class="logInput" name="delPw" id="delPw" placeholder="Password"><br>
+                <button type="button" class="smallButton" name="delButton" id="delButton" onclick="deleteAccount()">Delete Account</button>
+            </div>
         </div>
     </body>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>

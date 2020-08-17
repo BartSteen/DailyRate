@@ -1,11 +1,10 @@
 close database?
 appearance
-delete account (account page)
 add email stuff
-Ratings data analysis (nice graphs and such)
+More data visualizations
 Make date parsing less weird ? (without multiple date objects and w/e)
 jquery using statusCode instead of succes/error
 text on home page
-selected score on rating scale visual cue
 indication of succesful importation of data
-confirmation popup on certain actions
+robustness of data import
+list of ratings on data analysis page (scrollable or something)

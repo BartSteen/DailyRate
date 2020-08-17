@@ -38,6 +38,10 @@ function toggleExportDiv() {
     toggleDiv(document.getElementById("exportDiv"))
 }
 
+function toggleDelDiv() {
+    toggleDiv(document.getElementById("delDiv"))
+}
+
 function toggleDiv(div) {
     if (div.style.display == "block") {
         div.style.display = 'none'
@@ -112,3 +116,42 @@ async function downloadRatings() {
 
     link.click()
 }
+
+//deletes the account
+function deleteAccount() {
+    let password = $("#delPw").val();
+    if (password == "") {
+        alert("Fill in your password");
+        return;
+    }
+    let conf = confirm("Are you sure you want to delete your account?")
+    if (conf) {
+        //post the stuff
+        $.ajax({
+          type: "POST",
+          url: "/deleteAccount",
+          data: {password: password},
+          statusCode:{
+              200: function() {
+                  alert("Account deleted")
+                  location.href = '/login'
+              },
+              401: function() {
+                  alert("Password incorrect")
+              }
+          }
+        })
+    }
+}
+
+$('#submitFormButton').click(function() {
+    if (document.getElementById("importFileButton").value == "") {
+        alert("Select a file first")
+    } else {
+        let conf = confirm("imported ratings will overwrite the currently saved ones. Are you sure you want to import these ratings?");
+        if (conf) {
+            document.getElementById("importForm").submit();
+            alert("Succesfully imported")
+        }
+    }
+})

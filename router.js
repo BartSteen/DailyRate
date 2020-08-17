@@ -133,6 +133,18 @@ router.post("/changepw", async function(req, res) {
     }
 })
 
+router.post("/deleteAccount", async function(req, res) {
+    let password = req.body.password;
+    if (await comparePassword(password, req.session.userID)) {
+        await sqlhandler.actionQuery('DELETE FROM ratings WHERE userid == ?', [req.session.userID]);
+        await sqlhandler.actionQuery('DELETE FROM users WHERE id == ?', [req.session.userID]);
+        req.session.destroy();
+        res.status(200).end("it is done");
+    } else {
+        res.status(401).end("incorrect password")
+    }
+})
+
 //post rating to the db
 router.post("/rate", async function(req, res) {
     let dateString = req.body.dateString;
