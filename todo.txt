@@ -7,4 +7,6 @@ jquery using statusCode instead of succes/error
 text on home page
 indication of succesful importation of data
 robustness of data import
-list of ratings on data analysis page (scrollable or something)
+make ratings list have two columns
+analysis from past month/week only
+data analysis interactivity

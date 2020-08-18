@@ -42,6 +42,26 @@ body {
     text-align: center;
 }
 
+.scrollDiv {
+    max-height:300px;
+    overflow-y:auto;
+}
+
+.noPointsList {
+    list-style-type: none;
+}
+
+.listItem {
+    color: white;
+    font: 14px Helvetica;
+    padding: 8px;
+    border: 1px solid white;
+}
+
+.listItem:nth-child(even){
+  background: rgb(128,128,128);
+}
+
 .generalButton {
     background-color: #4CAF50; /* Green */
     border: 2px solid white;

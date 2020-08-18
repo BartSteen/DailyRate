@@ -6,8 +6,9 @@ let daysInWeek = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Frida
 async function initialAnalysis() {
     //get the ratings in different formats
     let ratings = await getAllRatingData(); // array of json of date string - ratings
-
     setTextualInfo(ratings);
+
+    showRatingsList(ratings);
 
     //visualization
     visBar(ratings);
@@ -113,6 +114,24 @@ function setTextualInfo(ratings) {
     document.getElementById("averageText").innerHTML = Math.round(average * 100)/100;
 }
 
+//shows the ratings in the list
+function showRatingsList(ratings) {
+    //sort the ratings
+    let sortedRatings = ratings.sort(function(a, b) {
+         let aSep = a.date.split("-");
+         let bSep = b.date.split("-");
+         return new Date(aSep[2], aSep[1], aSep[0]) - new Date(bSep[2], bSep[1], bSep[0])
+     })
+
+
+    let ulist = document.getElementById('ratingsList');
+    for (let i = 0; i < sortedRatings.length; i++) {
+        let item = document.createElement('li');
+        item.innerHTML = sortedRatings[i].date + "  |   " + sortedRatings[i].rating;
+        item.setAttribute('class', 'listItem');
+        ulist.appendChild(item);
+    }
+}
 
 //bar plot visualizatoin
 function visBar(ratings) {
@@ -232,7 +251,7 @@ function visBoxPlot(ratings) {
         .attr('transform', 'translate(0, ' + height +  ')')
         .call(d3.axisBottom(xScale))
 
-    //draw lines
+    //draw main line
     chart.append('line')
         .attr('x1', xScale(min))
         .attr('x2', xScale(max))
@@ -394,6 +413,16 @@ function visAverageDay(ratings) {
             .attr('stroke', 'white')
             .append("title")
 		        .text(function(d) {return d})
+
+    //total average line
+    let average = calculateAverage(ratings);
+    chart.append('line')
+        .attr('x1', 0)
+        .attr('x2', width)
+        .attr('y1', yScale(average))
+        .attr('y2', yScale(average))
+        .attr('stroke', 'orange')
+        .attr('stroke-dasharray', 5)
 
     //labels
     svg.append('text')
