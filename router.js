@@ -171,14 +171,35 @@ router.post("/importRatings", function(req, res) {
             //parse the strings
             let lines = data.split('\n');
             for (i = 0; i < lines.length; i++) {
-                let lineSplit = lines[i].split(",") //first elem is date, second is rating
-                if (lineSplit[1]) {
-                    let date = lineSplit[0];
-                    let rating = lineSplit[1];
-
-                    //post it
-                    let result = await sqlhandler.actionQuery('REPLACE INTO ratings(userid, date, rating) VALUES (?,?,?)', [req.session.userID, date, rating]);
+                //skip empty line at the end
+                if (lines[i] == "") {
+                    continue;
                 }
+                let lineSplit = lines[i].split(",") //first elem is date, second is rating
+                
+                //checking for good format
+                //check if there are two elements
+                if (!lineSplit[1]) {
+                    continue;
+                }
+                let date = lineSplit[0];
+                let rating = lineSplit[1];
+
+                //check if rating is an proper int in the range 1-10
+                if (!(rating >= 1 && rating <= 10) || parseInt(rating) != rating) {
+                    res.status(400).end("Wrong format in rating")
+                    return;
+                }
+
+                //check if it is a proper date
+                let dateParts = date.split("-");
+                if (isNaN(dateParts[0]) || isNaN(dateParts[1]) || isNaN(dateParts[2])) {
+                    res.status(400).end("Wrong format in date")
+                    return;
+                }
+
+                //put it in the db
+                let result = await sqlhandler.actionQuery('REPLACE INTO ratings(userid, date, rating) VALUES (?,?,?)', [req.session.userID, date, rating]);
             }
 
             res.redirect('/account')
