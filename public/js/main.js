@@ -1,23 +1,49 @@
-let nameText;
 let rating;
-let showingScale = false;
+let date;
+
+//sets up the entire page, only called at first page init
+async function setUpPage() {
+    //set the user name
+    let nameText = document.getElementById("nameText");
+    nameText.innerHTML = await getUserName();
+    date = new Date()
+
+    setUpRatingView();
+}
+
+//sets up the rating part of the page using the given date, called for every new date viewing
+async function setUpRatingView() {
+    //show the date in text
+    let dateText = document.getElementById("dateText");
+    dateText.innerHTML = date.toDateString()
+
+    //get the rating of that date
+    rating = await getRateData();
+    //set it according to if that date is rated or not
+    if (rating) {
+        hideScale();
+        document.getElementById("scoreText").innerHTML = rating;
+        document.getElementById("toggleButton").style.display = 'initial'
+    } else {
+        showScale();
+        document.getElementById("toggleButton").style.display = 'none'
+    }
+
+}
 
 //get the data of the user currently logged in
-async function getUserData() {
+async function getUserName() {
     let response = await fetch("/user", {
         headers: {
             'Content-type': 'application/json'
         }
     })
     let jsonRes = await response.json();
-    return jsonRes;
+    return jsonRes.username;
 }
 
 //get the rating data of today
-async function getRateData(date) {
-    if (!date) {
-        date = new Date();
-    }
+async function getRateData() {
     let res = await $.ajax({
         type: "GET",
         url: "/rate",
@@ -27,53 +53,30 @@ async function getRateData(date) {
     return res.rating;
 }
 
-//sets the page according to if today has been rated yet or not
-function showRatingText(score) {
-    if (score) {
-        showingScale = true;
-        toggleScale();
-        document.getElementById("scoreText").innerHTML = score;
-        document.getElementById("toggleButton").style.display = 'initial'
-    } else {
-        toggleScale();
-        document.getElementById("toggleButton").style.display = 'none'
-    }
+//shows the scale and hides the rating
+function showScale() {
+    document.getElementById("rateDiv").style.display = 'block'
+    document.getElementById("isRatedDiv").style.display = 'none'
+    document.getElementById("toggleButton").innerHTML = 'Show rating'
+    indicateChoice()
 }
 
-//toggles between showing the scale and the current rating
+//hides the scale and shows the rating
+function hideScale() {
+    document.getElementById("rateDiv").style.display = 'none'
+    document.getElementById("isRatedDiv").style.display = 'block'
+    document.getElementById("toggleButton").innerHTML = 'Change rating'
+}
+
+//toggles between scale modes (for the html button)
 function toggleScale() {
-    let rateDiv = document.getElementById("rateDiv")
-    let isRatedDiv = document.getElementById("isRatedDiv")
-    let toggleButton = document.getElementById("toggleButton")
-    if (showingScale) {
-        rateDiv.style.display = 'none';
-        isRatedDiv.style.display = 'block';
-        toggleButton.innerHTML = "Change rating"
+    if (document.getElementById('rateDiv').style.display == 'none') {
+        showScale();
     } else {
-        rateDiv.style.display = 'block';
-        isRatedDiv.style.display = 'none';
-        toggleButton.innerHTML = "Show rating"
+        hideScale();
     }
-    showingScale = !showingScale
 }
 
-//sets the proper initial texts on the page
-async function setTexts() {
-    let dateText = document.getElementById("dateText");
-    nameText = document.getElementById("nameText");
-
-    //show current date
-    let date = new Date();
-    dateText.innerHTML = date.toDateString()
-
-    //show username
-    let userData = await getUserData();
-    nameText.innerHTML = userData.username;
-
-    //get rating data and display it if necessary
-    let rating = await getRateData(date);
-    showRatingText(rating);
-}
 
 //colour the scale buttons
 $(".scaleButtons").each(function(i) {
@@ -89,6 +92,7 @@ $(".scaleButtons").click(function() {
     indicateChoice();
 })
 
+//hightlights the chosen score
 function indicateChoice() {
     $(".scaleButtons").each(function(i) {
         if (this.textContent == rating) {
@@ -104,15 +108,13 @@ $("#rateButton").click(function() {
     if (!rating) {
         alert("Select a rating first")
     } else {
-        let date = new Date();
         //post it to the server
         $.ajax({
           type: "POST",
           url: "/rate",
           data: {dateString: date.toDateString(), rating: rating},
           success: async function(data, status, res){
-              let rating = await getRateData();
-              showRatingText(rating);
+              setUpRatingView();
           },
           error: function(res) {
               alert("Something went wrong")
@@ -125,10 +127,8 @@ $("#rateButton").click(function() {
 //action when specific date rating is clicked
 $("#getRateButton").click(async function() {
     let dateElem = document.getElementById("dateGiver");
-    let textElem = document.getElementById("dateRateText");
-    let selectedDate = new Date(dateElem.value)
-
-    textElem.innerHTML = await getRateData(selectedDate);
+    date = new Date(dateElem.value)
+    setUpRatingView();
 
 })
 
