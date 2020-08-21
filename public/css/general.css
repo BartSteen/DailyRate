@@ -58,7 +58,7 @@ body {
     border: 1px solid white;
 }
 
-.listItem:nth-child(even){
+.listItem:nth-child(odd){
   background: rgb(128,128,128);
 }
 

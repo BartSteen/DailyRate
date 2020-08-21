@@ -10,4 +10,3 @@ make ratings list have two columns
 analysis from past month/week only (past month/ past year/ all time option)
 data analysis interactivity
 trim log input fields before sending them, also forbidden characters and such
-clear rating button on main

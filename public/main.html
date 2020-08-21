@@ -18,30 +18,29 @@
             <h2>Todays date is:</h2>
             <h2 id="dateText"></h2>
             <button type="button" class="generalButton" name="toggleButton" id="toggleButton"  onclick="toggleScale()">toggleScale</button>
-        <div class="initHidden" id="rateDiv">
-            <h2>Rate today</h2>
-            <div class="scaleDiv">
-                <button class="scaleButtons roundButtons" id="scaleButton1">1</button>
-                <button class="scaleButtons roundButtons" id="scaleButton2">2</button>
-                <button class="scaleButtons roundButtons" id="scaleButton3">3</button>
-                <button class="scaleButtons roundButtons" id="scaleButton4">4</button>
-                <button class="scaleButtons roundButtons" id="scaleButton5">5</button>
-                <button class="scaleButtons roundButtons" id="scaleButton6">6</button>
-                <button class="scaleButtons roundButtons" id="scaleButton7">7</button>
-                <button class="scaleButtons roundButtons" id="scaleButton8">8</button>
-                <button class="scaleButtons roundButtons" id="scaleButton9">9</button>
-                <button class="scaleButtons roundButtons" id="scaleButton10">10</button>
+            <div class="initHidden" id="rateDiv">
+                <h2>Rate today</h2>
+                <div class="scaleDiv">
+                    <button class="scaleButtons roundButtons" id="scaleButton1">1</button>
+                    <button class="scaleButtons roundButtons" id="scaleButton2">2</button>
+                    <button class="scaleButtons roundButtons" id="scaleButton3">3</button>
+                    <button class="scaleButtons roundButtons" id="scaleButton4">4</button>
+                    <button class="scaleButtons roundButtons" id="scaleButton5">5</button>
+                    <button class="scaleButtons roundButtons" id="scaleButton6">6</button>
+                    <button class="scaleButtons roundButtons" id="scaleButton7">7</button>
+                    <button class="scaleButtons roundButtons" id="scaleButton8">8</button>
+                    <button class="scaleButtons roundButtons" id="scaleButton9">9</button>
+                    <button class="scaleButtons roundButtons" id="scaleButton10">10</button>
+                </div>
+                <button type="button" class="generalButton" name="rateButton" id="rateButton">Rate</button>
             </div>
-            <button type="button" class="generalButton" name="rateButton" id="rateButton">Rate</button>
-        </div>
-        <div class="initHidden" id="isRatedDiv">
-            <h2 class="scoreText">You gave today a</h2> <h2 class="scoreText" id="scoreText"></h2>
-        </div>
-        </div>
-        <div class="centeredDiv">
-                <input type="date" name="dateGiver" id="dateGiver">
-                <button type="button" class="smallButton" name="getRateButton" id="getRateButton">Retrieve</button>
-                <h2 id="dateRateText"></h2>
+            <div class="initHidden" id="isRatedDiv">
+                <h2 class="scoreText">You gave today a</h2> <h2 class="scoreText" id="scoreText"></h2><br>
+                <button type="button" class="smallButton" name="removeButton" id="removeButton">Remove rating</button>
+            </div>
+            <input type="date" name="dateGiver" id="dateGiver">
+            <button type="button" class="smallButton" name="getRateButton" id="getRateButton">Retrieve</button>
+            <h2 id="dateRateText"></h2>
         </div>
     </body>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>

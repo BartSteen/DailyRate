@@ -124,12 +124,37 @@ $("#rateButton").click(function() {
     }
 })
 
+//action when the remove rating button is selected
+$("#removeButton").click(function() {
+    //ask for confirmation
+    let conf = confirm("Are you sure you want to remove this rating?")
+    if (!conf) {
+        return;
+    }
+    //post remove request
+    $.ajax({
+      type: "POST",
+      url: "/removeRating",
+      data: {dateString: date.toDateString()},
+      success: async function(data, status, res){
+          setUpRatingView();
+      },
+      error: function(res) {
+          alert("Something went wrong")
+          console.log(res);
+      }
+    });
+})
+
 //action when specific date rating is clicked
 $("#getRateButton").click(async function() {
     let dateElem = document.getElementById("dateGiver");
-    date = new Date(dateElem.value)
+    if (dateElem.value == "") {
+        date = new Date();
+    } else {
+        date = new Date(dateElem.value)
+    }
     setUpRatingView();
-
 })
 
 //action to logout from current account and auto redirect

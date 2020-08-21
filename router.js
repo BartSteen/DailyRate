@@ -164,6 +164,17 @@ router.post("/rate", async function(req, res) {
     res.status(200).end("Rating stored")
 })
 
+//remove the rating specified in the request
+router.post("/removeRating", async function(req, res) {
+    //get the date from the request
+    let dateString = req.body.dateString;
+    let date = new Date(dateString);
+
+    //remove it from the db
+    await sqlhandler.actionQuery('DELETE FROM ratings WHERE userid == ? AND date == ?', [req.session.userID, getNumericDate(date)])
+    res.status(200).end("Rating removed");
+})
+
 router.post("/importRatings", function(req, res) {
     let form = formidable({keepExtensions: true})
     form.parse(req, async function(err, fields, file) {
@@ -176,7 +187,7 @@ router.post("/importRatings", function(req, res) {
                     continue;
                 }
                 let lineSplit = lines[i].split(",") //first elem is date, second is rating
-                
+
                 //checking for good format
                 //check if there are two elements
                 if (!lineSplit[1]) {
