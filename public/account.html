@@ -3,7 +3,7 @@
     <head>
         <meta charset="utf-8">
         <title>Account</title>
-        <link rel="stylesheet" href="/css/general.css", type="text/css">
+        <link rel="stylesheet" href="/css/general.css" type="text/css">
         <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
     </head>
     <body onload="setUp()">
@@ -15,6 +15,7 @@
             <h3>Password:</h3>
             <button type="button" class='generalButton' name="showChangePwButton" id="showChangePwButton" onclick="togglePwDiv()">Change password</button><br>
             <div class="nestedDiv initHidden", id="passwordDiv">
+                <input type="password" class="logInput" name="oldPw" id="oldPw" placeholder="Old Password"><br>
                 <input type="password" class="logInput" name="newPw" id="newPw" placeholder="New Password"><br>
                 <input type="password" class="logInput" name="newPw2" id="newPw2" placeholder="New Password confirmation"><br>
                 <button type="button" class="smallButton" name="sendPwChange" id="sendPwChange" onclick="changePw()">Change</button><br>
