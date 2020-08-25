@@ -5,7 +5,7 @@ const app = express();
 const generalRouter = require('./router')
 const favicon = require('serve-favicon')
 
-const port = 3000;
+const port = process.env.PORT || 3000;
 
 //listen at the port
 app.listen(port, () => console.log("Listening at port " + port));
