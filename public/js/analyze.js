@@ -1,4 +1,4 @@
-let visColour = '#7eedac'; //general accent colour of the visualizations
+let visColour = '#88e645'; //general accent colour of the visualizations
 let daysInWeek = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 
 
@@ -136,7 +136,7 @@ function showRatingsList(ratings) {
 //bar plot visualizatoin
 function visBar(ratings) {
     let svg = d3.select("#barSvg");
-    let margin = 50;
+    let margin = 30;
     let height = svg.attr("height") - 2 * margin;
     let width = svg.attr("width") - 2 * margin
 
