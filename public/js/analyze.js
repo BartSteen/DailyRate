@@ -1,33 +1,91 @@
 let visColour = '#88e645'; //general accent colour of the visualizations
 let daysInWeek = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+let periodSelection;
+let generalRatings;
 
+//initiates the page (only done on body load)
+async function initPage() {
+    periodSelection = document.getElementById("allTimeButton");
+    indicatePeriod()
 
-//initiates all the analyses/visualizations
-async function initialAnalysis() {
-    //get the ratings in different formats
-    let ratings = await getAllRatingData(); // array of json of date string - ratings
+    //analyze stuff
+    let ratings = await getPeriodRatings();
+    performAnalysis(ratings);
+
+}
+
+//returns the ratings of the currently selected period
+async function getPeriodRatings() {
+    //get the ratings if empty save the trouble by returning early
+    let allRatings = await getAllRatingData()
+    if (allRatings.length == 0) {
+        return allRatings;
+    }
+    //return array and current date for selection
+    let selectedRatings = [];
+    let today = new Date();
+
+    if (periodSelection == document.getElementById('allTimeButton')) {
+        //on all ratings just give all we have
+        selectedRatings = allRatings;
+    } else if (periodSelection == document.getElementById('yearButton')) {
+        //add those ratings of the current year
+        let year = today.getFullYear();
+        for (i = 0; i < allRatings.length; i++) {
+            if (allRatings[i].date.split("-")[2] == year) {
+                selectedRatings.push(allRatings[i])
+            }
+        }
+    } else if (periodSelection == document.getElementById('monthButton')) {
+        //add those ratings of current month AND year
+        let month = today.getMonth() + 1;
+        let year = today.getFullYear();
+        for (i = 0; i < allRatings.length; i++) {
+            if (allRatings[i].date.split("-")[1] == month && allRatings[i].date.split("-")[2] == year) {
+                selectedRatings.push(allRatings[i])
+            }
+        }
+    }
+    //return the selected elements array
+    return selectedRatings;
+}
+
+//performs all the analyses using the ratings in the parameter
+function performAnalysis(ratings) {
+    //if there are no ratings just display that there are 0 and do nothing else
+    if (ratings.length == 0) {
+        document.getElementById('amountText').innerHTML = '0';
+        return;
+    }
+
     setTextualInfo(ratings);
-
     showRatingsList(ratings);
 
     //visualization
     visBar(ratings);
     visBoxPlot(ratings)
     visTimePlot(ratings)
-
     visAverageDay(ratings)
 }
 
 //get all ratings of current user
 async function getAllRatingData() {
+    //if they alraedy were retrieved once use that one
+    if (generalRatings) {
+        return generalRatings;
+    }
+
+    //request them
     let response = await fetch("/allratings", {
         headers: {
             'Content-type': 'application/json'
         }
     })
-    let jsonRes = await response.json();
-    console.log(jsonRes);
-    return jsonRes;
+
+    //json them
+    generalRatings = await response.json();
+    console.log(generalRatings);
+    return generalRatings;
 }
 
 //returns an array with only the ratings
@@ -108,11 +166,31 @@ function getMaxCount(counts) {
     return max;
 }
 
+//sets the text elements with the correct information
 function setTextualInfo(ratings) {
     let average = calculateAverage(ratings);
     document.getElementById("amountText").innerHTML = ratings.length;
     document.getElementById("averageText").innerHTML = Math.round(average * 100)/100;
 }
+
+//indicate which of the 3 periods is selected by colouring it differently
+function indicatePeriod() {
+    $(".periodButton").each(function(i) {
+        if (this == periodSelection) {
+            this.style.backgroundColor = '#52751e';
+        } else {
+            this.style.backgroundColor = "#86C232";
+        }
+    })
+}
+
+//click action for period button
+$(".periodButton").click(async function() {
+    periodSelection = this;
+    indicatePeriod();
+    //redo analyses with the selected period ratings
+    performAnalysis(await getPeriodRatings());
+})
 
 //shows the ratings in the list
 function showRatingsList(ratings) {
@@ -123,6 +201,10 @@ function showRatingsList(ratings) {
          return new Date(aSep[2], aSep[1], aSep[0]) - new Date(bSep[2], bSep[1], bSep[0])
      })
 
+     //clear list in case items already exist from previous times
+     $(".listItem").each(function() {
+         this.remove();
+     })
 
     let ulist = document.getElementById('ratingsList');
     for (let i = 0; i < sortedRatings.length; i++) {
@@ -136,6 +218,10 @@ function showRatingsList(ratings) {
 //bar plot visualizatoin
 function visBar(ratings) {
     let svg = d3.select("#barSvg");
+    //clear svg in case stuff exists from other time
+    svg.selectAll("*").remove();
+
+    //size stuff
     let margin = 30;
     let height = svg.attr("height") - 2 * margin;
     let width = svg.attr("width") - 2 * margin
@@ -171,8 +257,8 @@ function visBar(ratings) {
         .ticks(Math.min(maxY, 10))
         .tickFormat(d3.format('d')));
 
-        //horizontal grid
-        chart.append('g')
+    //horizontal grid
+    chart.append('g')
         .attr('class', 'grid')
         .call(d3.axisLeft()
             .scale(yScale)
@@ -193,8 +279,6 @@ function visBar(ratings) {
             .append("title")
 		        .text(counts[n])
     }
-
-
 
     //labels
     svg.append('text')
@@ -217,6 +301,10 @@ function visBar(ratings) {
 //visualize a box plot
 function visBoxPlot(ratings) {
     let svg = d3.select("#boxPlotSvg");
+    //clear svg in case stuff exists from other time
+    svg.selectAll("*").remove();
+
+    //size stuff
     let margin = 30;
     let height = svg.attr("height") - 2 * margin;
     let width = svg.attr("width") - 2 * margin;
@@ -294,6 +382,10 @@ function visBoxPlot(ratings) {
 //visualize the over time ratings plot
 function visTimePlot(ratings) {
     let svg = d3.select("#datePlotSvg");
+    //clear svg in case stuff exists from other time
+    svg.selectAll("*").remove();
+
+    //size stuff
     let margin = 30;
     let height = svg.attr("height") - 2 * margin;
     let width = svg.attr("width") - 2 * margin;
@@ -358,6 +450,10 @@ function visTimePlot(ratings) {
 
 function visAverageDay(ratings) {
     let svg = d3.select("#averageDaySvg");
+    //clear svg in case stuff exists from other time
+    svg.selectAll("*").remove();
+
+    //size stuff
     let margin = 30;
     let height = svg.attr("height") - 2 * margin;
     let width = svg.attr("width") - 2 * margin;
@@ -391,8 +487,8 @@ function visAverageDay(ratings) {
         .ticks(10)
         .tickFormat(d3.format('d')));
 
-        //horizontal grid
-        chart.append('g')
+    //horizontal grid
+    chart.append('g')
         .attr('class', 'grid')
         .call(d3.axisLeft()
             .scale(yScale)
@@ -401,18 +497,18 @@ function visAverageDay(ratings) {
             .tickFormat(''))
 
     //add bars
-        chart.append('g').selectAll('idk')
-        .data(weekDayAverages)
-        .enter()
-        .append('rect')
-        .attr('x', function(d, i) {return xScale(daysInWeek[i])})
-        .attr('y', function(d) {return yScale(d) + 1})
-            .attr('height', function(d) {return Math.max(height - yScale(d) - 1, 0)})
-            .attr('width', xScale.bandwidth())
-            .attr('fill', visColour)
-            .attr('stroke', 'white')
-            .append("title")
-		        .text(function(d) {return d})
+    chart.append('g').selectAll('idk')
+    .data(weekDayAverages)
+    .enter()
+    .append('rect')
+    .attr('x', function(d, i) {return xScale(daysInWeek[i])})
+    .attr('y', function(d) {return yScale(d) + 1})
+        .attr('height', function(d) {return Math.max(height - yScale(d) - 1, 0)})
+        .attr('width', xScale.bandwidth())
+        .attr('fill', visColour)
+        .attr('stroke', 'white')
+        .append("title")
+	        .text(function(d) {return d})
 
     //total average line
     let average = calculateAverage(ratings);

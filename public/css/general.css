@@ -156,6 +156,22 @@ html  {
     border: 2px solid #61892F;
 }
 
+.periodButton {
+/*    background-color: #86C232; /* Green */
+    color: white;
+    padding: 4px 12px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 18px;
+    margin: 10px 0px 10px;
+    border-radius: 6px;
+    transition-duration: 0.4s;
+}
+
+.periodButton:hover {
+/*    background-color: #659126; /* Green */
+}
 
 .material-icons.icon {
     font-size: 32px;

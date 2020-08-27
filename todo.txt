@@ -5,13 +5,12 @@ Make date parsing less weird ? (without multiple date objects and w/e) (also yyy
 jquery using statusCode instead of succes/error
 indication of succesful/erroneous importation of data (properly)
 make ratings list have two columns
-analysis from past month/week only (past month/ past year/ all time option)
 data analysis interactivity
 trim log input fields before sending them, also forbidden characters and such
 Select your own color for visualizations?
-Host this thing somewhere somehow 
 Fix the background not covering the whole page when the window gets resized
 other browser support
 better navigation menu (sidebar?)
 for robustness check for req body content if it exists in router
 update cleared db to git
+mobile support

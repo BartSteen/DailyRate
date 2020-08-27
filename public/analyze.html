@@ -5,13 +5,17 @@
         <title>Analyze</title>
         <link rel="stylesheet" href="/css/general.css" type="text/css">
         <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
         <script src="https://d3js.org/d3.v5.min.js"></script>
-        <script src="js/analyze.js"></script>
+        <script src="js/analyze.js" defer></script>
     </head>
-    <body onload="initialAnalysis()">
+    <body onload="initPage()">
         <button type="button" name="homeButton" class="iconButton" title="home" onclick="location.href='main'"><i class="icon material-icons">home</i></button>
         <div class="centeredDiv boxedDiv">
-            <h1>Analysis</h1>
+            <h1>Analysis</h1><br>
+            <button type="button" class="periodButton" name="allTimeButton" id="allTimeButton">All time</button>
+            <button type="button" class="periodButton" name="yearButton" id="yearButton">This year</button>
+            <button type="button" class="periodButton" name="monthButton" id="monthButton">This month</button>
             <h3>Number of ratings: </h3><h3 id="amountText"></h3><br>
             <h3>Average rating: </h3><h3 id="averageText"></h3><br>
             <h3>Ratings</h3><br>
