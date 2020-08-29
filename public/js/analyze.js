@@ -177,7 +177,7 @@ function setTextualInfo(ratings) {
 function indicatePeriod() {
     $(".periodButton").each(function(i) {
         if (this == periodSelection) {
-            this.style.backgroundColor = '#52751e';
+            this.style.backgroundColor = '#659126';
         } else {
             this.style.backgroundColor = "#86C232";
         }

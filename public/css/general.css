@@ -36,6 +36,10 @@ html  {
     background-color: #222629;
 }
 
+button {
+    cursor: pointer;
+}
+
 .centeredDiv {
     margin: auto;
     width: 50%;
@@ -100,9 +104,9 @@ html  {
 }
 
 .generalButton:hover {
-    background-color: white; /* Green */
-    color: black;
-    border: 2px solid #61892F;
+    background-color: #659126; /* Green */
+    /*color: black;
+    border: 2px solid #61892F;*/
 }
 
 .smallButton {
@@ -120,9 +124,17 @@ html  {
 }
 
 .smallButton:hover {
-    background-color: white; /* Green */
-    color: black;
-    border: 2px solid #61892F;
+    background-color: #659126; /* Green */
+    /*color: black;
+    border: 2px solid #61892F;*/
+}
+
+.smallButton.seriousButton {
+    background-color: red;
+}
+
+.smallButton.seriousButton:hover {
+    background-color: #9e0b0b;
 }
 
 .iconButton {
@@ -159,18 +171,21 @@ html  {
 .periodButton {
 /*    background-color: #86C232; /* Green */
     color: white;
-    padding: 4px 12px;
+    padding: 6px 14px;
     text-align: center;
     text-decoration: none;
-    display: inline-block;
     font-size: 18px;
     margin: 10px 0px 10px;
-    border-radius: 6px;
     transition-duration: 0.4s;
+    border: 1px solid #61892F;
 }
 
-.periodButton:hover {
-/*    background-color: #659126; /* Green */
+.periodButton.leftRound {
+    border-radius: 6px 0px 0px 6px;
+}
+
+.periodButton.rightRound {
+    border-radius: 0px 6px 6px 0px;
 }
 
 .material-icons.icon {

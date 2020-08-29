@@ -14,3 +14,4 @@ better navigation menu (sidebar?)
 for robustness check for req body content if it exists in router
 update cleared db to git
 mobile support
+make delete account button red
