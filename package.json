@@ -16,6 +16,6 @@
     "fs": "0.0.1-security",
     "serve-favicon": "^2.5.0",
     "sqlite": "^4.0.12",
-    "sqlite3": "^5.0.0"
+    "sqlite3": "^5.0.3"
   }
 }
